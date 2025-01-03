@@ -80,6 +80,8 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
         stroke: 'black',
         strokeWidth: 1,
         fill: 'transparent',
+      }, {
+        startPoints: [startX.value, startY.value],
       }));
       if (fabricObj.value) {
         canvas.value.add(fabricObj.value);
@@ -141,6 +143,26 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
             ry: shiftState.value ? rx : ry,
           });
           break;
+        case 'circle':
+          fabricObj.value.set({
+            top: pointer.y - 6,
+            left: pointer.x - 6,
+          });
+          if ('updateLinePosition' in fabricObj.value) {
+            if (fabricStore.activeTool === 'line3') {
+              (fabricObj.value as any).updateLinePosition(fabricObj.value, true);
+            }
+            else {
+              (fabricObj.value as any).updateLinePosition(fabricObj.value);
+            }
+          }
+          break;
+        case 'line':
+          fabricObj.value.set({
+            x2: pointer.x,
+            y2: pointer.y,
+          });
+          break;
       }
       fabricObj.value.setCoords();
       canvas.value.renderAll();
@@ -162,13 +184,15 @@ function handleMouseUp() {
         fabricObj.value = null;
       }
 
-      if (fabricStore.activeTool !== 'move') {
-        canvas.value.forEachObject((obj) => {
-          obj.selectable = true;
-          obj.evented = true;
-        });
-        canvas.value.renderAll();
-      }
+      // if (fabricStore.activeTool !== 'move') {
+      //   canvas.value.forEachObject((obj) => {
+      //     // get prevSelectable and prevEvented
+      //     console.log(obj.prevSelectable);
+      //     obj.selectable = (obj as any).prevSelectable ?? true;
+      //     obj.evented = (obj as any).prevEvented ?? true;
+      //   });
+      //   canvas.value.renderAll();
+      // }
     }
   }
   catch (error) {

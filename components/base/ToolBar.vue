@@ -29,6 +29,16 @@ const toolbars = ref<Toolbar[]>([
     icon: 'i-ph-circle',
     action: 'ellipse',
   },
+  {
+    name: 'Line',
+    icon: 'i-ph-line-segment',
+    action: 'line',
+  },
+  {
+    name: '3 path',
+    icon: 'i-ph-line-segments',
+    action: 'line3',
+  },
 ]);
 </script>
 

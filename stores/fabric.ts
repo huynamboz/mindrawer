@@ -29,7 +29,7 @@ export const useFabricStore = defineStore('fabric', () => {
   }
 
   function init(canvasElement: HTMLCanvasElement) {
-    canvas.value = markRaw(new Canvas(canvasElement));
+    canvas.value = markRaw(new Canvas(canvasElement, { renderOnAddRemove: false }));
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
   }
@@ -47,6 +47,7 @@ export const useFabricStore = defineStore('fabric', () => {
       canvas.value.selection = false; // Disable object selection
       canvas.value.discardActiveObject();
       canvas.value.forEachObject((obj) => {
+        Object.assign(obj, { prevSelectable: obj.selectable, prevEvented: obj.evented });
         obj.selectable = false;
         obj.evented = false;
       });
@@ -56,8 +57,8 @@ export const useFabricStore = defineStore('fabric', () => {
       canvas.value.selection = true;
       canvas.value.defaultCursor = 'default';
       canvas.value.forEachObject((obj) => {
-        obj.selectable = true;
-        obj.evented = true;
+        obj.selectable = (obj as any).prevSelectable ?? true;
+        obj.evented = (obj as any).prevEvented ?? true;
       });
       canvas.value.renderAll();
     }
