@@ -68,12 +68,6 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
     canvas.value.selection = false; // Disable object selection
     lastPosX.value = evt.clientX;
     lastPosY.value = evt.clientY;
-    canvas.value.discardActiveObject();
-    canvas.value.forEachObject((obj) => {
-      obj.selectable = false;
-      obj.evented = false;
-    });
-    canvas.value.renderAll();
   }
   else {
     const pointer = canvas.value.getPointer(evt);

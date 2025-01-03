@@ -45,6 +45,22 @@ export const useFabricStore = defineStore('fabric', () => {
     else if (action === 'select') {
       canvas.value.defaultCursor = 'default';
     }
+
+    if (action !== 'select') {
+      canvas.value.discardActiveObject();
+      canvas.value.forEachObject((obj) => {
+        obj.selectable = false;
+        obj.evented = false;
+      });
+      canvas.value.renderAll();
+    }
+    else if (action === 'select') {
+      canvas.value.forEachObject((obj) => {
+        obj.selectable = true;
+        obj.evented = true;
+      });
+      canvas.value.renderAll();
+    }
   }
 
   function saveActiveTool() {
