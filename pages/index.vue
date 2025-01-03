@@ -36,10 +36,10 @@ const canvas = computed(() => fabricStore.canvas);
 const dragTools = ['move', 'select'];
 const isMouseDown = ref(false);
 const isDragging = ref(false); // Track dragging state
-const lastPosX = ref<number | null>(null);
-const lastPosY = ref<number | null>(null); // Store last mouse positions
-const startX = ref<number | null>(null);
-const startY = ref<number | null>(null);
+const lastPosX = ref<number>(0);
+const lastPosY = ref<number>(0); // Store last mouse positions
+const startX = ref<number>(0);
+const startY = ref<number>(0);
 const fabricObj = ref<FabricObject<Partial<FabricObjectProps>, SerializedObjectProps, ObjectEvents> | null>();
 
 function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
@@ -106,14 +106,14 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
   if (fabricStore.activeTool === 'move') {
     const vpt = canvas.value.viewportTransform;
     if ('clientX' in evt) {
-      vpt[4] += evt.clientX - (lastPosX.value || 0);
-      vpt[5] += evt.clientY - (lastPosY.value || 0);
+      vpt[4] += evt.clientX - (lastPosX.value);
+      vpt[5] += evt.clientY - (lastPosY.value);
       lastPosX.value = evt.clientX;
       lastPosY.value = evt.clientY;
     }
     else {
-      vpt[4] += evt.touches[0].clientX - (lastPosX.value || 0);
-      vpt[5] += evt.touches[0].clientY - (lastPosY.value || 0);
+      vpt[4] += evt.touches[0].clientX - (lastPosX.value);
+      vpt[5] += evt.touches[0].clientY - (lastPosY.value);
       lastPosX.value = evt.touches[0].clientX;
       lastPosY.value = evt.touches[0].clientY;
     }
@@ -121,25 +121,23 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
   }
   else {
     const pointer = canvas.value.getPointer(evt);
-    console.log(startX.value, startY.value, pointer.x, pointer.y);
-    const width = pointer.x - (startX.value || 0);
-    const height = pointer.y - (startY.value || 0);
-    const rx = Math.abs(pointer.x - (startX.value || 0)) / 2; // Half width
-    const ry = Math.abs(pointer.y - (startY.value || 0)) / 2; // Half height
-    const left = Math.min(pointer.x, startX.value || 0);
-    const top = Math.min(pointer.y, startY.value || 0);
+    const width = pointer.x - (startX.value);
+    const height = pointer.y - (startY.value);
+    const rx = Math.abs(pointer.x - (startX.value)) / 2; // Half width
+    const ry = Math.abs(pointer.y - (startY.value)) / 2; // Half height
+    const left = Math.min(pointer.x, startX.value);
+    const top = Math.min(pointer.y, startY.value);
 
     if (fabricObj.value && !dragTools.includes(fabricStore.activeTool)) {
       canvas.value.selection = false;
-      console.log(fabricObj.value.type);
       switch (fabricObj.value.type) {
         case 'rect':
         case 'triangle':
           fabricObj.value.set({
             width: Math.abs(width),
             height: Math.abs(height),
-            left: width > 0 ? startX.value : startX.value || 0 - Math.abs(width),
-            top: height > 0 ? startY.value : startY.value || 0 - Math.abs(height),
+            left: width > 0 ? startX.value : startX.value - Math.abs(width),
+            top: height > 0 ? startY.value : startY.value - Math.abs(height),
           });
           break;
         case 'ellipse':

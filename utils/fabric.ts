@@ -175,10 +175,10 @@ export function updateFabricObject(fabricObj: FabricObject<Partial<FabricObjectP
   // fabricObj.setCoords();
   switch (fabricObj.type) {
     case 'triangle':
-      fabricObj.setCoords();
+      // fabricObj.setCoords();
       break;
     case 'rect':
-      fabricObj.setCoords();
+      // fabricObj.setCoords();
       break;
     case 'circle':
       fabricObj.setCoords();

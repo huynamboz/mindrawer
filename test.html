@@ -91,6 +91,7 @@
                 const width = pointer.x - startX;
                 const height = pointer.y - startY;
 
+                console.log(width < 0 ? startX + width : startX, height < 0 ? startY + height : startY);
                 triangle.set({
                     width: Math.abs(width),
                     height: Math.abs(height),
