@@ -4,6 +4,7 @@ import type { ToolType } from '~/types/toolbar';
 export const useFabricStore = defineStore('fabric', () => {
   const canvas = ref<Canvas>();
   const activeTool = ref<ToolType>('select');
+  const savedActiveTool = ref<ToolType>('select');
 
   function resizeCanvas() {
     if (!canvas.value) {
@@ -36,13 +37,27 @@ export const useFabricStore = defineStore('fabric', () => {
   function setActiveTool(action: ToolType) {
     if (!canvas.value) return;
     activeTool.value = action;
+    canvas.value.defaultCursor = 'crosshair';
 
     if (action === 'move') {
       canvas.value.defaultCursor = 'grabbing';
     }
-    else {
+    else if (action === 'select') {
       canvas.value.defaultCursor = 'default';
     }
+  }
+
+  function saveActiveTool() {
+    savedActiveTool.value = activeTool.value;
+  }
+
+  function restoreActiveTool() {
+    activeTool.value = savedActiveTool.value;
+  }
+
+  function enableTempMoveMode() {
+    saveActiveTool();
+    setActiveTool('move');
   }
 
   return {
@@ -50,5 +65,8 @@ export const useFabricStore = defineStore('fabric', () => {
     init,
     setActiveTool,
     activeTool,
+    saveActiveTool,
+    restoreActiveTool,
+    enableTempMoveMode,
   };
 });

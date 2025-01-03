@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { Triangle, type FabricObject, type Canvas, type FabricObjectProps, type ObjectEvents, type SerializedObjectProps, Rect, Point, type TPointerEventInfo, type TPointerEvent } from 'fabric';
+import { type FabricObject, type FabricObjectProps, type ObjectEvents, type SerializedObjectProps, Point, type TPointerEventInfo, type TPointerEvent } from 'fabric';
 import { ref, computed, onMounted } from 'vue';
-import { useKeyModifier } from '@vueuse/core';
+import { useKeyModifier, useMagicKeys } from '@vueuse/core';
 
+const { space } = useMagicKeys();
 const shiftState = useKeyModifier('Shift');
 const fabricStore = useFabricStore();
 const canvasElement = ref<HTMLCanvasElement | null>(null);
-
+watch(space, (v) => {
+  console.log('space has been pressed', v);
+  if (v) {
+    fabricStore.enableTempMoveMode();
+  }
+  else {
+    fabricStore.restoreActiveTool();
+  }
+});
 const canvas = computed(() => fabricStore.canvas);
 const dragTools = ['move', 'select'];
 const isMouseDown = ref(false);
@@ -141,7 +150,7 @@ function handleMouseUp() {
       return;
     }
     if (isDragging.value) {
-      if (!dragTools.includes(fabricStore.activeTool)) {
+      if (fabricObj.value && !dragTools.includes(fabricStore.activeTool)) {
         fabricStore.setActiveTool('select');
         canvas.value.setActiveObject(fabricObj.value);
         fabricObj.value = null;
@@ -161,8 +170,9 @@ function handleMouseUp() {
     isMouseDown.value = false;
     isDragging.value = false;
 
-    if (!canvas.value) return;
-    canvas.value.selection = true;
+    if (canvas.value) {
+      canvas.value.selection = true;
+    }
   }
 }
 

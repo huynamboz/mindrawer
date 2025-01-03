@@ -33,8 +33,15 @@ const toolbars = ref<Toolbar[]>([
 </script>
 
 <template>
-  <div class="fixed flex items-center gap-0 z-50 py-1 bg-white bottom-10 -translate-x-1/2 left-1/2 h-[40px] w-[400px] shadow-sm rounded-lg border">
-    <!-- <div class="h-full border-r flex items-center gap-1 px-1">
+  <div class="fixed z-50 bottom-8 w-fit -translate-x-1/2 left-1/2 h-[40px] shadow-sm bg-white rounded-lg border">
+    <div class="relative w-fit flex items-center gap-1 px-1 py-1 ">
+      <p class="text-[10px] whitespace-nowrap text-gray-500 absolute -top-6 left-1/2 transform -translate-x-1/2">
+        To move canvas, hold <span class="font-bold">Space</span> and drag or use <span class="font-bold">Hand
+
+          <span class="i-lineicons-hand" />
+        </span> tool
+      </p>
+      <!-- <div class="h-full border-r flex items-center gap-1 px-1">
       <div
         :class="{ '!bg-slate-200': fabricStore.activeTool === toolbars[0].action }"
         class="w-8 h-8 hover:bg-slate-100 flex cursor-pointer rounded-md items-center justify-center"
@@ -51,18 +58,19 @@ const toolbars = ref<Toolbar[]>([
       </div>
     </div> -->
 
-    <!-- list -->
-    <div
-      v-for="toolbar in toolbars"
-      :key="toolbar.name"
-      class="h-full flex items-center gap-1 pl-1"
-    >
+      <!-- list -->
       <div
-        :class="{ '!bg-slate-200': fabricStore.activeTool === toolbar.action }"
-        class="w-8 h-8 hover:bg-slate-100 flex cursor-pointer rounded-md items-center justify-center"
-        @click="fabricStore.setActiveTool(toolbar.action)"
+        v-for="toolbar in toolbars"
+        :key="toolbar.name"
+        class="h-full flex items-center gap-1"
       >
-        <span :class="toolbar.icon" />
+        <div
+          :class="{ '!bg-slate-200': fabricStore.activeTool === toolbar.action }"
+          class="w-8 h-8 hover:bg-slate-100 flex cursor-pointer rounded-md items-center justify-center"
+          @click="fabricStore.setActiveTool(toolbar.action)"
+        >
+          <span :class="toolbar.icon" />
+        </div>
       </div>
     </div>
   </div>

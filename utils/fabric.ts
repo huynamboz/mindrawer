@@ -1,6 +1,6 @@
 // import { Triangle, type FabricObject, type Canvas, type FabricObjectProps, type ObjectEvents, type SerializedObjectProps, Rect, Point } from 'fabric';
 
-import { Circle, Rect, Ellipse, Triangle, type FabricObjectProps, FabricObject } from 'fabric';
+import { type FabricObject, Circle, Rect, Ellipse, Triangle, type FabricObjectProps } from 'fabric';
 import type { ToolType } from '~/types/toolbar';
 
 // export function setupFabricMouseEvent(canvas: Canvas) {
@@ -161,10 +161,10 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
     case 'circle':
       return new Circle(options);
     case 'ellipse':
-      return new Ellipse({...options, rx: 0, // Initial horizontal radius
+      return new Ellipse({ ...options, rx: 0, // Initial horizontal radius
         ry: 0, // Initial vertical radius
-        fill: 'rgba(79, 195, 247, 0.7)',
-        stroke: 'blue',});
+        fill: 'transparent', // Fill color
+        stroke: 'black' });
     default:
       return new Rect(options);
   }
