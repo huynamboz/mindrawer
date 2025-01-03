@@ -3,6 +3,22 @@ import { type FabricObject, type FabricObjectProps, type ObjectEvents, type Seri
 import { ref, computed, onMounted } from 'vue';
 import { useKeyModifier, useMagicKeys } from '@vueuse/core';
 
+useHead({
+  htmlAttrs: { lang: 'en' },
+  title: 'Ezdraw - A virtual whiteboard for everyone',
+  meta: [{ name: 'description', content: '' }],
+});
+
+useSeoMeta({
+  charset: 'utf-8',
+  author: 'huynamboz',
+  title: 'Ezdraw - A virtual whiteboard for everyone',
+  ogTitle: 'Ezdraw - A virtual whiteboard for everyone',
+  description: 'Ezdraw is a simple drawing tool that allows you to draw with ease',
+  ogDescription: 'Ezdraw is a simple drawing tool that allows you to draw with ease',
+  ogImage: '/public/images/thumbnail.png',
+});
+
 const { space } = useMagicKeys();
 const shiftState = useKeyModifier('Shift');
 const fabricStore = useFabricStore();
