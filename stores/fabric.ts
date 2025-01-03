@@ -42,11 +42,9 @@ export const useFabricStore = defineStore('fabric', () => {
     if (action === 'move') {
       canvas.value.defaultCursor = 'grabbing';
     }
-    else if (action === 'select') {
-      canvas.value.defaultCursor = 'default';
-    }
 
     if (action !== 'select') {
+      canvas.value.selection = false; // Disable object selection
       canvas.value.discardActiveObject();
       canvas.value.forEachObject((obj) => {
         obj.selectable = false;
@@ -55,6 +53,8 @@ export const useFabricStore = defineStore('fabric', () => {
       canvas.value.renderAll();
     }
     else if (action === 'select') {
+      canvas.value.selection = true;
+      canvas.value.defaultCursor = 'default';
       canvas.value.forEachObject((obj) => {
         obj.selectable = true;
         obj.evented = true;

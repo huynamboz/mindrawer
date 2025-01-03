@@ -65,7 +65,6 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
   const evt = opt.e;
   isMouseDown.value = true;
   if (fabricStore.activeTool === 'move') {
-    canvas.value.selection = false; // Disable object selection
     lastPosX.value = evt.clientX;
     lastPosY.value = evt.clientY;
   }
@@ -123,7 +122,6 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
     const top = Math.min(pointer.y, startY.value);
 
     if (fabricObj.value && !dragTools.includes(fabricStore.activeTool)) {
-      canvas.value.selection = false;
       switch (fabricObj.value.type) {
         case 'rect':
         case 'triangle':
@@ -164,11 +162,13 @@ function handleMouseUp() {
         fabricObj.value = null;
       }
 
-      canvas.value.forEachObject((obj) => {
-        obj.selectable = true;
-        obj.evented = true;
-      });
-      canvas.value.renderAll();
+      if (fabricStore.activeTool !== 'move') {
+        canvas.value.forEachObject((obj) => {
+          obj.selectable = true;
+          obj.evented = true;
+        });
+        canvas.value.renderAll();
+      }
     }
   }
   catch (error) {
@@ -177,10 +177,6 @@ function handleMouseUp() {
   finally {
     isMouseDown.value = false;
     isDragging.value = false;
-
-    if (canvas.value) {
-      canvas.value.selection = true;
-    }
   }
 }
 
