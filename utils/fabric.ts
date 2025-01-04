@@ -1,4 +1,4 @@
-import { Triangle, type FabricObjectProps, Rect, Circle, Line, Ellipse, Group } from 'fabric';
+import { Triangle, type FabricObjectProps, Rect, Circle, Line, Ellipse } from 'fabric';
 
 // import { type ObjectEvents, type FabricObject, type Line, type Group, Circle, type Rect, type Ellipse, type Triangle, type FabricObjectProps, type SerializedObjectProps } from 'fabric';
 import type { ToolType } from '~/types/toolbar';
@@ -29,15 +29,17 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         const lineId = line.get('id');
 
         const firstPoint = makeCircle(line.get('x1') - CIRCLE_RADIUS, line.get('y1') - CIRCLE_RADIUS, [lineId, lineId], 'start');
-        const endPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, lineId], 'end');
+        const endPoint = makeCircle(line.get('x2') - CIRCLE_RADIUS / 2, line.get('y2') - CIRCLE_RADIUS / 2, [lineId, lineId], 'end');
+
         canvas?.add(line, firstPoint);
+        canvas?.bringObjectToFront(firstPoint);
+        canvas?.bringObjectToFront(endPoint);
         canvas?.on('object:moving', function (e) {
           updateLinePosition(e.target);
         });
 
         // if selected then show all points, if deselected then hide all points
         line.on('mousedown', () => {
-          console.log('mousedown');
           [firstPoint, endPoint].forEach((p) => {
             p.set('visible', true);
           });
@@ -69,13 +71,17 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
 
         const line = makeLine([x1, y1, x1, y1]);
         const line2 = makeLine([x1, y1, x1, y1]);
-        canvas?.add(line, line2);
+        const lineId = line.get('id');
+        const line2Id = line2.get('id');
 
-        const firstPoint = makeCircle(line.get('x1') - CIRCLE_RADIUS, line.get('y1') - CIRCLE_RADIUS, [line, line2], 'start');
-        const midPoint = makeCircle(line.get('x2'), line.get('y2'), [line, line2], 'mid');
-        const endPoint = makeCircle(line.get('x2'), line.get('y2'), [line, line2], 'end');
+        const firstPoint = makeCircle(line.get('x1') - CIRCLE_RADIUS, line.get('y1') - CIRCLE_RADIUS, [lineId, line2Id], 'start');
+        const midPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, line2Id], 'mid');
+        const endPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, line2Id], 'end');
 
-        canvas?.add(firstPoint, midPoint);
+        canvas?.add(line, line2, firstPoint, midPoint);
+        canvas?.bringObjectToFront(firstPoint);
+        canvas?.bringObjectToFront(midPoint);
+        canvas?.bringObjectToFront(endPoint);
         canvas?.on('object:moving', function (e) {
           updateLinePosition(e.target);
         });
@@ -86,6 +92,8 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
             console.log('mousedown');
             [firstPoint, midPoint, endPoint].forEach((p) => {
               p.set('visible', true);
+              // canvas?.bringToFront(p)
+              canvas?.bringObjectToFront(p);
             });
           });
         });
@@ -103,7 +111,9 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
           };
         });
 
-        Object.assign(endPoint, { updateLinePosition, midPoint: midPoint, points: [firstPoint, midPoint, endPoint] });
+        Object.assign(endPoint, { updateLinePosition, midPointId: midPoint.get('id') });
+        Object.assign(line, { pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')] });
+        Object.assign(line2, { pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')] });
         return endPoint;
       }
       else
@@ -127,8 +137,6 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
       return new Rect(options);
   }
 }
-
-
 
 // export function setupFabricMouseEvent(canvas: Canvas) {
 //   canvas.on('mouse:wheel', function (opt) {

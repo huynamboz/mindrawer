@@ -29,7 +29,7 @@ export const useFabricStore = defineStore('fabric', () => {
   }
 
   function init(canvasElement: HTMLCanvasElement) {
-    canvas.value = markRaw(new Canvas(canvasElement, { renderOnAddRemove: false }));
+    canvas.value = markRaw(new Canvas(canvasElement, { renderOnAddRemove: false, preserveObjectStacking: true }));
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
   }
