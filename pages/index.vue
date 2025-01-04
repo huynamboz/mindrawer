@@ -55,6 +55,7 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
   canvas.value.zoomToPoint(new Point(opt.e.offsetX, opt.e.offsetY), zoom);
   opt.e.preventDefault();
   opt.e.stopPropagation();
+  canvas.value.requestRenderAll();
 }
 
 function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
@@ -158,10 +159,8 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
           }
           break;
         case 'line':
-          fabricObj.value.set({
-            x2: pointer.x,
-            y2: pointer.y,
-          });
+          console.log('line moving', fabricObj.value);
+          (fabricObj.value as any).updateLinePosition(fabricObj.value, true);
           break;
       }
       fabricObj.value.setCoords();

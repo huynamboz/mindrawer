@@ -77,6 +77,10 @@ export const useFabricStore = defineStore('fabric', () => {
     setActiveTool('move');
   }
 
+  function getObjectById(id: string) {
+    return canvas.value?.getObjects().find(obj => obj.get('id') === id);
+  }
+
   return {
     canvas,
     init,
@@ -85,5 +89,6 @@ export const useFabricStore = defineStore('fabric', () => {
     saveActiveTool,
     restoreActiveTool,
     enableTempMoveMode,
+    getObjectById,
   };
 });

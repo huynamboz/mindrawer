@@ -23,6 +23,7 @@
     "fabric": "^6.5.4",
     "nuxt": "^3.15.0",
     "pinia": "^2.3.0",
+    "uuid": "^11.0.3",
     "vue": "latest",
     "vue-router": "latest"
   },
@@ -31,6 +32,7 @@
     "@egoist/tailwindcss-icons": "^1.8.2",
     "@iconify-json/lineicons": "^1.2.4",
     "@iconify-json/ph": "^1.2.2",
+    "@types/uuid": "^10.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.4.2",
