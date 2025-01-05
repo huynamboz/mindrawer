@@ -1,7 +1,15 @@
 <script setup lang="ts">
+import { onKeyStroke } from '@vueuse/core';
 import type { Toolbar } from '~/types/toolbar';
 
 const fabricStore = useFabricStore();
+
+onKeyStroke(['1', '2', '3', '4', '5', '6', '7', '8'], (e) => {
+  const keyNumber = Number(e.key);
+  if (!isNaN(keyNumber) && 1 <= keyNumber && keyNumber <= toolbars.value.length) {
+    fabricStore.setActiveTool(toolbars.value[keyNumber - 1].action);
+  }
+});
 
 const toolbars = ref<Toolbar[]>([
   {
@@ -39,6 +47,11 @@ const toolbars = ref<Toolbar[]>([
     icon: 'i-ph-line-segments',
     action: 'line3',
   },
+  {
+    name: 'Text',
+    icon: 'i-ph-text-aa',
+    action: 'text',
+  },
 ]);
 </script>
 
@@ -70,10 +83,16 @@ const toolbars = ref<Toolbar[]>([
 
       <!-- list -->
       <div
-        v-for="toolbar in toolbars"
+        v-for="(toolbar, index) in toolbars"
         :key="toolbar.name"
-        class="h-full flex items-center gap-1"
+        class="h-full relative flex items-center gap-1"
       >
+        <span
+          :class="{ 'text-gray-800': fabricStore.activeTool === toolbar.action }"
+          class="absolute top-0 left-1 text-gray-400 text-[8px]"
+        >
+          {{ index + 1 }}
+        </span>
         <div
           :class="{ '!bg-slate-200': fabricStore.activeTool === toolbar.action }"
           class="w-8 h-8 hover:bg-slate-100 flex cursor-pointer rounded-md items-center justify-center"
@@ -81,6 +100,10 @@ const toolbars = ref<Toolbar[]>([
         >
           <span :class="toolbar.icon" />
         </div>
+        <div
+          v-if="index === 1"
+          class="h-[25px] w-[1px] border-r"
+        />
       </div>
     </div>
   </div>
