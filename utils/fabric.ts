@@ -19,6 +19,7 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
     selectable: true,
     prevEvented: true,
     prevSelectable: true,
+    perPixelTargetFind: true,
   };
 
   const fabricStore = useFabricStore();

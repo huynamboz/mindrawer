@@ -57,6 +57,12 @@ const toolbars = ref<Toolbar[]>([
 
 onKeyStroke(toolbars.value.map(i => i.key), (e) => {
   const toolbar = toolbars.value.find(t => t.key === e.key);
+  const currentObjectActive = fabricStore.canvas?.getActiveObjects();
+
+  // dont switch tool if current object active is textbox
+  if (currentObjectActive?.length === 1 && currentObjectActive[0].type === 'textbox') {
+    return;
+  }
   if (toolbar)
     fabricStore.setActiveTool(toolbar.action);
 });
