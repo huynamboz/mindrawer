@@ -4,55 +4,68 @@ import type { Toolbar } from '~/types/toolbar';
 
 const fabricStore = useFabricStore();
 
-onKeyStroke(['1', '2', '3', '4', '5', '6', '7', '8'], (e) => {
-  const keyNumber = Number(e.key);
-  if (!isNaN(keyNumber) && 1 <= keyNumber && keyNumber <= toolbars.value.length) {
-    fabricStore.setActiveTool(toolbars.value[keyNumber - 1].action);
-  }
-});
-
 const toolbars = ref<Toolbar[]>([
   {
     name: 'Hand',
     icon: 'i-lineicons-hand',
     action: 'move',
+    key: 'a',
   },
   {
     name: 'Move',
     icon: 'i-lineicons-location-arrow-right',
     action: 'select',
+    key: 's',
   },
   {
     name: 'Triangle',
     icon: 'i-ph-triangle',
     action: 'triangle',
+    key: 'd',
   },
   {
     name: 'Rectangle',
     icon: 'i-ph-rectangle',
     action: 'rect',
+    key: 'f',
   },
   {
     name: 'Ellipse',
     icon: 'i-ph-circle',
     action: 'ellipse',
+    key: 'g',
   },
   {
     name: 'Line',
     icon: 'i-ph-line-segment',
     action: 'line',
+    key: 'h',
   },
   {
     name: '3 path',
     icon: 'i-ph-line-segments',
     action: 'line3',
+    key: 'j',
   },
   {
     name: 'Text',
     icon: 'i-ph-text-aa',
     action: 'text',
+    key: 'k',
   },
 ]);
+
+onKeyStroke(toolbars.value.map(i => i.key), (e) => {
+  const toolbar = toolbars.value.find(t => t.key === e.key);
+  const currentObjectActive = fabricStore.canvas?.getActiveObjects();
+
+  // dont switch tool if current object active is textbox
+  if (currentObjectActive?.length === 1 && currentObjectActive[0].type === 'textbox') {
+    return;
+  }
+  if (toolbar)
+    fabricStore.setActiveTool(toolbar.action);
+});
 </script>
 
 <template>
@@ -89,9 +102,9 @@ const toolbars = ref<Toolbar[]>([
       >
         <span
           :class="{ 'text-gray-800': fabricStore.activeTool === toolbar.action }"
-          class="absolute top-0 left-1 text-gray-400 text-[8px]"
+          class="absolute -top-[1px] left-1 text-gray-400 text-[9px]"
         >
-          {{ index + 1 }}
+          {{ toolbar.key }}
         </span>
         <div
           :class="{ '!bg-slate-200': fabricStore.activeTool === toolbar.action }"

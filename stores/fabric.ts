@@ -28,8 +28,10 @@ export const useFabricStore = defineStore('fabric', () => {
     canvas.value.renderAll();
   }
 
+  // preserveObjectStacking - Không thay đổi z-index của object khi click
+  // targetFindTolerance - vùng xung quanh object để có thể click trúng
   function init(canvasElement: HTMLCanvasElement) {
-    canvas.value = markRaw(new Canvas(canvasElement, { renderOnAddRemove: false, preserveObjectStacking: true }));
+    canvas.value = markRaw(new Canvas(canvasElement, { renderOnAddRemove: false, preserveObjectStacking: true, targetFindTolerance: 10 }));
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
   }
@@ -47,6 +49,8 @@ export const useFabricStore = defineStore('fabric', () => {
       canvas.value.selection = false; // Disable object selection
       canvas.value.discardActiveObject();
       canvas.value.forEachObject((obj) => {
+        obj.selectable = obj.get('prevSelectable') ?? true;
+        obj.evented = obj.get('prevEvented') ?? true;
         Object.assign(obj, { prevSelectable: obj.selectable, prevEvented: obj.evented });
         obj.selectable = false;
         obj.evented = false;

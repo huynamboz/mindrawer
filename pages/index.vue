@@ -5,17 +5,17 @@ import { useKeyModifier, useMagicKeys } from '@vueuse/core';
 
 useHead({
   htmlAttrs: { lang: 'en' },
-  title: 'Ezdraw - A virtual whiteboard for everyone',
+  title: 'Mindrawer - A virtual whiteboard for everyone',
   meta: [{ name: 'description', content: '' }],
 });
 
 useSeoMeta({
   charset: 'utf-8',
   author: 'huynamboz',
-  title: 'Ezdraw - A virtual whiteboard for everyone',
-  ogTitle: 'Ezdraw - A virtual whiteboard for everyone',
-  description: 'Ezdraw is a simple drawing tool that allows you to draw with ease',
-  ogDescription: 'Ezdraw is a simple drawing tool that allows you to draw with ease',
+  title: 'Mindrawer - A virtual whiteboard for everyone',
+  ogTitle: 'Mindrawer - A virtual whiteboard for everyone',
+  description: 'Mindrawer is a simple drawing tool that allows you to draw with ease',
+  ogDescription: 'Mindrawer is a simple drawing tool that allows you to draw with ease',
   ogImage: '/public/images/thumbnail.png',
 });
 
