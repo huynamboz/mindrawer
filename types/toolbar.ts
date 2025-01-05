@@ -3,5 +3,6 @@ export type ToolType = 'move' | 'select' | 'rect' | 'circle' | 'triangle' | 'ell
 export interface Toolbar {
   name: string;
   icon: string;
+  key: string;
   action: ToolType;
 }
