@@ -1,4 +1,5 @@
 import { Triangle, type FabricObjectProps, Rect, Circle, Line, Ellipse, Textbox } from 'fabric';
+import { v4 as uuidv4 } from 'uuid';
 
 // import { type ObjectEvents, type FabricObject, type Line, type Group, Circle, type Rect, type Ellipse, type Triangle, type FabricObjectProps, type SerializedObjectProps } from 'fabric';
 import type { ToolType } from '~/types/toolbar';
@@ -96,7 +97,6 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
             console.log('mousedown');
             [firstPoint, midPoint, endPoint].forEach((p) => {
               p.set('visible', true);
-              // canvas?.bringToFront(p)
               canvas?.bringObjectToFront(p);
             });
           });
@@ -138,11 +138,22 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         fill: 'transparent', // Fill color
         stroke: 'black' });
     case 'text':
-      return new Textbox('I\'m at fontSize 40', {
+    {
+      const textbox = new Textbox('', {
+        id: uuidv4(),
         fontSize: 40,
         top: option.top,
         left: option.left,
       });
+
+      textbox.on('deselected', () => {
+        if (!textbox.text?.trim()) {
+          canvas?.remove(textbox);
+          canvas?.renderAll();
+        }
+      });
+      return textbox;
+    }
 
     default:
       return new Rect(options);

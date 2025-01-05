@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fabric.js Drag to Create Triangle</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/654/index.min.js"></script>
     <style>
         canvas {
             border: 1px solid #ccc;
@@ -58,7 +58,7 @@
                     startX = pointer.x;
                     startY = pointer.y;
 
-                    triangle = new fabric.Textbox('asdasd',{
+                    triangle = new fabric.Textbox('',{
                         left: startX,
                         top: startY,
                         width: 0,
@@ -66,9 +66,14 @@
                         fill: 'rgba(0, 0, 255, 0.5)',
                         selectable: false,
                         evented: false, // Disable events while drawing
+                        editable: true
                     });
+                    canvas.add(triangle)
+                    canvas.setActiveObject(triangle);;
+                    triangle.enterEditing();
+                    triangle.hiddenTextarea?.focus();
+                    canvas.renderAll()
 
-                    canvas.add(triangle);
                 }
             }
 

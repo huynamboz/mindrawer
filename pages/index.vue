@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type FabricObject, type FabricObjectProps, type ObjectEvents, type SerializedObjectProps, Point, type TPointerEventInfo, type TPointerEvent } from 'fabric';
+import { type Textbox, type FabricObject, type FabricObjectProps, type ObjectEvents, type SerializedObjectProps, Point, type TPointerEventInfo, type TPointerEvent } from 'fabric';
 import { ref, computed, onMounted } from 'vue';
 import { useKeyModifier, useMagicKeys } from '@vueuse/core';
 
@@ -86,13 +86,13 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
       }));
       if (fabricObj.value) {
         canvas.value.add(fabricObj.value);
-        canvas.value.renderAll();
         if (fabricObj.value.type === 'textbox') {
           fabricStore.setActiveTool('select');
-        //   (fabricObj.value as Textbox).enterEditing();
-        //   (fabricObj.value as Textbox).hiddenTextarea?.focus();
-        // canvas.value.renderAll();
+          canvas.value.setActiveObject(fabricObj.value);
+          (fabricObj.value as Textbox).enterEditing();
+          (fabricObj.value as Textbox).hiddenTextarea?.focus();
         }
+        canvas.value.requestRenderAll();
       }
     }
   }
@@ -146,7 +146,6 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
           fabricObj.value.set({
             left: left,
             top: top,
-            // radius: Math.sqrt((pointer.x - (startX.value || 0)) ** 2 + (pointer.y - (startY.value || 0)) ** 2) / 2,
             rx,
             ry: shiftState.value ? rx : ry,
           });
@@ -179,7 +178,7 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
 function handleMouseUp() {
   try {
     if (!canvas.value) return;
-    if (!isDragging.value && fabricObj.value && (fabricObj.value.width < 2 || fabricObj.value.height < 2)) {
+    if (!isDragging.value && fabricObj.value && fabricObj.value.type !== 'textbox' && (fabricObj.value.width < 2 || fabricObj.value.height < 2)) {
       canvas.value.remove(fabricObj.value);
       return;
     }
@@ -189,16 +188,6 @@ function handleMouseUp() {
         canvas.value.setActiveObject(fabricObj.value);
         fabricObj.value = null;
       }
-
-      // if (fabricStore.activeTool !== 'move') {
-      //   canvas.value.forEachObject((obj) => {
-      //     // get prevSelectable and prevEvented
-      //     console.log(obj.prevSelectable);
-      //     obj.selectable = (obj as any).prevSelectable ?? true;
-      //     obj.evented = (obj as any).prevEvented ?? true;
-      //   });
-      //   canvas.value.renderAll();
-      // }
     }
   }
   catch (error) {
