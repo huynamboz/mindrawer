@@ -24,7 +24,7 @@ const shiftState = useKeyModifier('Shift');
 const fabricStore = useFabricStore();
 const canvasElement = ref<HTMLCanvasElement | null>(null);
 watch(space, (v) => {
-  console.log('space has been pressed', v);
+  if (fabricStore.activeTool === 'move' && fabricStore.savedActiveTool === 'move') return;
   if (v) {
     fabricStore.enableTempMoveMode();
   }
@@ -86,6 +86,13 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
       }));
       if (fabricObj.value) {
         canvas.value.add(fabricObj.value);
+        canvas.value.renderAll();
+        if (fabricObj.value.type === 'textbox') {
+          fabricStore.setActiveTool('select');
+        //   (fabricObj.value as Textbox).enterEditing();
+        //   (fabricObj.value as Textbox).hiddenTextarea?.focus();
+        // canvas.value.renderAll();
+        }
       }
     }
   }

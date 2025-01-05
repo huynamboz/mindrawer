@@ -1,4 +1,4 @@
-import { Triangle, type FabricObjectProps, Rect, Circle, Line, Ellipse } from 'fabric';
+import { Triangle, type FabricObjectProps, Rect, Circle, Line, Ellipse, Textbox } from 'fabric';
 
 // import { type ObjectEvents, type FabricObject, type Line, type Group, Circle, type Rect, type Ellipse, type Triangle, type FabricObjectProps, type SerializedObjectProps } from 'fabric';
 import type { ToolType } from '~/types/toolbar';
@@ -14,6 +14,10 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
     height: 0,
     left: 0,
     top: 0,
+    evented: true,
+    selectable: true,
+    prevEvented: true,
+    prevSelectable: true,
   };
 
   const fabricStore = useFabricStore();
@@ -133,6 +137,13 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         ry: 0, // Initial vertical radius
         fill: 'transparent', // Fill color
         stroke: 'black' });
+    case 'text':
+      return new Textbox('I\'m at fontSize 40', {
+        fontSize: 40,
+        top: option.top,
+        left: option.left,
+      });
+
     default:
       return new Rect(options);
   }

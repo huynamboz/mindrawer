@@ -69,7 +69,7 @@ export const useFabricStore = defineStore('fabric', () => {
   }
 
   function restoreActiveTool() {
-    activeTool.value = savedActiveTool.value;
+    setActiveTool(savedActiveTool.value);
   }
 
   function enableTempMoveMode() {
@@ -86,6 +86,7 @@ export const useFabricStore = defineStore('fabric', () => {
     init,
     setActiveTool,
     activeTool,
+    savedActiveTool,
     saveActiveTool,
     restoreActiveTool,
     enableTempMoveMode,
