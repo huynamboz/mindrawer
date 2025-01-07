@@ -38,7 +38,7 @@ export function makeLine(coords: [number, number, number, number]) {
     id: uuidv4(),
     fill: 'transparent',
     stroke: 'black',
-    strokeWidth: 2,
+    strokeWidth: 1,
     selectable: true,
     evented: true,
   });

@@ -37,16 +37,30 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
   if (!canvas.value) {
     return;
   }
-
-  const delta = opt.e.deltaY;
-  let zoom = canvas.value.getZoom();
-  zoom *= 0.999 ** delta;
-  if (zoom > 20) zoom = 20;
-  if (zoom < 0.01) zoom = 0.01;
-  canvas.value.zoomToPoint(new Point(opt.e.offsetX, opt.e.offsetY), zoom);
   opt.e.preventDefault();
   opt.e.stopPropagation();
-  canvas.value.requestRenderAll();
+
+  if (opt.e.ctrlKey) {
+    const delta = opt.e.deltaY;
+    let zoom = canvas.value.getZoom();
+    zoom *= 0.999 ** delta;
+    if (zoom > 20) zoom = 20;
+    if (zoom < 0.01) zoom = 0.01;
+    canvas.value.zoomToPoint(new Point(opt.e.offsetX, opt.e.offsetY), zoom);
+  }
+  else {
+    // Di chuyển canvas (pan)
+    const e = opt.e;
+    const vpt = canvas.value.viewportTransform;
+
+    // Đảo chiều giá trị delta để pan hoạt động đúng hướng
+    vpt[4] -= e.deltaX;
+    vpt[5] -= e.deltaY;
+  }
+  canvas.value.getActiveObjects().forEach((o) => {
+    o.setCoords();
+  });
+  canvas.value.renderAll();
 }
 
 function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
