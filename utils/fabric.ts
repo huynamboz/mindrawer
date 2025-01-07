@@ -1,4 +1,4 @@
-import { Triangle, type FabricObjectProps, Rect, Circle, Line, Ellipse, Textbox } from 'fabric';
+import { type IText, Triangle, type FabricObjectProps, Rect, Circle, Line, Ellipse, Textbox } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
 // import { type ObjectEvents, type FabricObject, type Line, type Group, Circle, type Rect, type Ellipse, type Triangle, type FabricObjectProps, type SerializedObjectProps } from 'fabric';
@@ -145,6 +145,7 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         fontSize: 40,
         top: option.top,
         left: option.left,
+        editingBorderColor: 'transparent',
       });
 
       textbox.on('deselected', () => {
@@ -153,6 +154,16 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
           canvas?.renderAll();
         }
       });
+
+      // eslint-disable-next-line no-empty-character-class
+      textbox._wordJoiners = /[]/;
+      function fitTextboxToContent(textV: { target: IText }) {
+        const text = textV.target;
+        const textLinesMaxWidth = text.textLines.reduce((max, _, i) => Math.max(max, text.getLineWidth(i)), 0);
+        text.set({ width: textLinesMaxWidth });
+      }
+
+      canvas?.on('text:changed', fitTextboxToContent);
       return textbox;
     }
 

@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { onKeyStroke } from '@vueuse/core';
+import { onKeyStroke, useMagicKeys } from '@vueuse/core';
 import type { Toolbar } from '~/types/toolbar';
+
+const { space } = useMagicKeys();
 
 const fabricStore = useFabricStore();
 
@@ -54,17 +56,32 @@ const toolbars = ref<Toolbar[]>([
     key: 'k',
   },
 ]);
+const isAnyTextboxEditing = computed(() => fabricStore.canvas?.getActiveObjects()?.some(i => i.get('isEditing')));
 
 onKeyStroke(toolbars.value.map(i => i.key), (e) => {
   const toolbar = toolbars.value.find(t => t.key === e.key);
-  const currentObjectActive = fabricStore.canvas?.getActiveObjects();
 
   // dont switch tool if current object active is textbox
-  if (currentObjectActive?.length === 1 && currentObjectActive[0].type === 'textbox') {
+  if (isAnyTextboxEditing.value) {
     return;
   }
   if (toolbar)
     fabricStore.setActiveTool(toolbar.action);
+});
+
+watch(space, (v) => {
+  if (fabricStore.activeTool === 'move' && fabricStore.savedActiveTool === 'move') return;
+
+  if (isAnyTextboxEditing.value) {
+    return;
+  }
+
+  if (v) {
+    fabricStore.enableTempMoveMode();
+  }
+  else {
+    fabricStore.restoreActiveTool();
+  }
 });
 </script>
 

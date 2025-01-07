@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type Textbox, type FabricObject, type FabricObjectProps, type ObjectEvents, type SerializedObjectProps, Point, type TPointerEventInfo, type TPointerEvent } from 'fabric';
 import { ref, computed, onMounted } from 'vue';
-import { useKeyModifier, useMagicKeys } from '@vueuse/core';
+import { useKeyModifier } from '@vueuse/core';
 
 useHead({
   htmlAttrs: { lang: 'en' },
@@ -19,19 +19,10 @@ useSeoMeta({
   ogImage: '/public/images/thumbnail.png',
 });
 
-const { space } = useMagicKeys();
 const shiftState = useKeyModifier('Shift');
 const fabricStore = useFabricStore();
 const canvasElement = ref<HTMLCanvasElement | null>(null);
-watch(space, (v) => {
-  if (fabricStore.activeTool === 'move' && fabricStore.savedActiveTool === 'move') return;
-  if (v) {
-    fabricStore.enableTempMoveMode();
-  }
-  else {
-    fabricStore.restoreActiveTool();
-  }
-});
+
 const canvas = computed(() => fabricStore.canvas);
 const dragTools = ['move', 'select'];
 const isMouseDown = ref(false);
