@@ -103,7 +103,7 @@
                     left: width < 0 ? startX + width : startX,
                     top: height < 0 ? startY + height : startY,
                 });
-
+                triangle.setCoords();
                 canvas.renderAll();
             }
 
@@ -146,16 +146,37 @@
 
         // Zooming functionality with mouse wheel
         canvas.on('mouse:wheel', function(opt) {
-            var delta = opt.e.deltaY;
+            // var delta = opt.e.deltaY;
+            // var zoom = canvas.getZoom();
+            // zoom *= 0.999 ** delta;
+            // if (zoom > 20) zoom = 20;
+            // if (zoom < 0.01) zoom = 0.01;
+            // canvas.setZoom(zoom);
+            // opt.e.preventDefault();
+            // opt.e.stopPropagation();
+        });
+        canvas.on("mouse:wheel", function(opt) {
+            opt.e.preventDefault()
+            opt.e.stopPropagation()
+            if (opt.e.ctrlKey) {
+              console.log("pinch")
+              var delta = opt.e.deltaY;
             var zoom = canvas.getZoom();
             zoom *= 0.999 ** delta;
             if (zoom > 20) zoom = 20;
             if (zoom < 0.01) zoom = 0.01;
-            canvas.setZoom(zoom);
-            opt.e.preventDefault();
-            opt.e.stopPropagation();
-        });
-
+            // opt.e.preventDefault();
+            // opt.e.stopPropagation();
+              canvas.setZoom(zoom);
+            } else {
+              var e = opt.e;
+              var vpt = this.viewportTransform;
+              vpt[4] += e.deltaX;
+              vpt[5] += e.deltaY;
+            }
+            this.item(0).setCoords()
+            this.requestRenderAll();
+          })
         // Log sự kiện chọn đối tượng
         canvas.on('selection:created', function () {
             console.log("Object selected!");

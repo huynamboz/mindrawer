@@ -12,7 +12,7 @@ const config: Config = {
     // Select the icon collections you want to use
     // You can also ignore this option to automatically discover all individual icon packages you have installed
     // If you install @iconify/json, you should explicitly specify the collections you want to use, like this:
-      collections: getIconCollections(['solar', 'lineicons', 'ph']),
+      collections: getIconCollections(['solar', 'lineicons', 'ph', 'mdi']),
     }),
   ],
 };
