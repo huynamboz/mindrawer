@@ -20,6 +20,10 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
     prevEvented: true,
     prevSelectable: true,
     perPixelTargetFind: true,
+
+    // set strokeUniform and noScaleCache to not resize stroke when resize object
+    strokeUniform: true,
+    noScaleCache: false,
   };
 
   const fabricStore = useFabricStore();
@@ -128,7 +132,9 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
       return new Triangle(options);
 
     case 'rect':
-      return new Rect(options);
+    { const rect = new Rect(options);
+      return rect;
+    }
 
     case 'circle':
       return new Circle(options);
