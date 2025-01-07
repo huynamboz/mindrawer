@@ -56,13 +56,20 @@ const toolbars = ref<Toolbar[]>([
     key: 'k',
   },
 ]);
-const isAnyTextboxEditing = computed(() => fabricStore.canvas?.getActiveObjects()?.some(i => i.get('isEditing')));
+
+const isAnyTextboxEditing = () => {
+  const objects = fabricStore.canvas?.getActiveObjects() ?? [];
+  if (objects.length === 0) {
+    return false;
+  }
+  return objects.some(i => i.get('isEditing'));
+};
 
 onKeyStroke(toolbars.value.map(i => i.key), (e) => {
   const toolbar = toolbars.value.find(t => t.key === e.key);
 
   // dont switch tool if current object active is textbox
-  if (isAnyTextboxEditing.value) {
+  if (isAnyTextboxEditing()) {
     return;
   }
   if (toolbar)
@@ -72,7 +79,7 @@ onKeyStroke(toolbars.value.map(i => i.key), (e) => {
 watch(space, (v) => {
   if (fabricStore.activeTool === 'move' && fabricStore.savedActiveTool === 'move') return;
 
-  if (isAnyTextboxEditing.value) {
+  if (isAnyTextboxEditing()) {
     return;
   }
 
