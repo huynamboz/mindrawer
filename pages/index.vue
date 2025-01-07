@@ -43,9 +43,9 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
   if (opt.e.ctrlKey) {
     const delta = opt.e.deltaY;
     let zoom = canvas.value.getZoom();
-    zoom *= 0.999 ** delta;
+    zoom *= 0.99 ** delta;
     if (zoom > 20) zoom = 20;
-    if (zoom < 0.01) zoom = 0.01;
+    if (zoom < 0.1) zoom = 0.1;
     canvas.value.zoomToPoint(new Point(opt.e.offsetX, opt.e.offsetY), zoom);
   }
   else {
