@@ -9,7 +9,7 @@ import {
   type SerializedObjectProps } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
-export const CIRCLE_RADIUS = 6;
+export const CIRCLE_RADIUS = 4;
 
 export function makeCircle(
   left: number,
@@ -24,7 +24,7 @@ export function makeCircle(
     strokeWidth: 1,
     radius: CIRCLE_RADIUS,
     fill: '#fff',
-    stroke: '#666',
+    stroke: '#0b99ff',
   });
   c.hasControls = c.hasBorders = false;
 
@@ -197,4 +197,8 @@ export function updateLinePositionWrapper(target: FabricObject) {
   else {
     updateLinePosition(target);
   }
+}
+
+export function updateLineThreeControlPosition() {
+
 }

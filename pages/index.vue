@@ -4,6 +4,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useKeyModifier } from '@vueuse/core';
 import { handlePasteImage } from '~/utils/fabric/image';
 import { createFabricObject } from '~/utils/fabric/fabric';
+import { CIRCLE_RADIUS } from '~/utils/fabric/lineControl';
 
 useHead({
   htmlAttrs: { lang: 'en' },
@@ -159,8 +160,8 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
           break;
         case 'circle':
           fabricObj.value.set({
-            top: pointer.y - 6,
-            left: pointer.x - 6,
+            top: pointer.y - CIRCLE_RADIUS,
+            left: pointer.x - CIRCLE_RADIUS,
           });
           if ('updateLinePosition' in fabricObj.value) {
             if (fabricStore.activeTool === 'line3') {

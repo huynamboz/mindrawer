@@ -82,14 +82,16 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
             [firstPoint, endPoint].forEach((p) => {
               p.set('visible', false);
             });
-            canvas?.renderAll();
+            canvas?.requestRenderAll();
           };
         });
 
-        Object.assign(endPoint, { updateLinePosition });
-
+        endPoint.set({ updateLinePosition });
         // asign points to line
-        Object.assign(line, { pointIds: [firstPoint.get('id'), endPoint.get('id')] });
+        line.set({
+          pointIds: [firstPoint.get('id'), endPoint.get('id')],
+        });
+
         return endPoint;
       }
       else
@@ -139,9 +141,17 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
           };
         });
 
-        Object.assign(endPoint, { updateLinePosition, midPointId: midPoint.get('id') });
-        Object.assign(line, { pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')] });
-        Object.assign(line2, { pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')] });
+        endPoint.set({ updateLinePosition, midPointId: midPoint.get('id') });
+
+        line.set({
+          pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')],
+          label: 'line-three-dot',
+        });
+
+        line2.set({
+          pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')],
+          label: 'line-three-dot',
+        });
         return endPoint;
       }
       else

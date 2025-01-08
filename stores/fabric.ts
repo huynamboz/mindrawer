@@ -160,7 +160,7 @@ export const useFabricStore = defineStore('fabric', () => {
         // Update the zoom value
         currentZoom = isZoomingIn ? currentZoom + step : currentZoom - step;
         canvas.value?.zoomToPoint(zoomPoint, currentZoom);
-        canvas.value?.renderAll();
+        canvas.value?.requestRenderAll();
       }, intervalTime);
     });
   }
