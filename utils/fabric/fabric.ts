@@ -189,6 +189,7 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         editingBorderColor: 'transparent',
       });
 
+      textbox.set(defaultObjectControl);
       textbox.on('deselected', () => {
         if (!textbox.text?.trim()) {
           canvas?.remove(textbox);

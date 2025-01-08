@@ -77,7 +77,7 @@ onKeyStroke(toolbars.value.map(i => i.key), (e) => {
 });
 
 onKeyStroke('Backspace', () => {
-  if (!fabricStore.canvas) return;
+  if (!fabricStore.canvas || isAnyTextboxEditing()) return;
   const objects = fabricStore.canvas.getActiveObjects();
   fabricStore.canvas.remove(...objects);
   fabricStore.canvas.renderAll();
