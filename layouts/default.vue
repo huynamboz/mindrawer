@@ -18,7 +18,7 @@ import ToolBar from '~/components/base/ToolBar.vue';
       alt=""
     >
 
-    <div class="fixed top-3 left-1/2 flex items-center gap-1 h-[20px] -translate-x-1/2 z-50">
+    <div class="max-md:hidden fixed top-3 left-1/2 flex items-center gap-1 h-[20px] -translate-x-1/2 z-50">
       <img
         class="h-[12px]"
         src="/logo.png"
