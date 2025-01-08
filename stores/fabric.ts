@@ -1,4 +1,4 @@
-import { Canvas } from 'fabric';
+import { Canvas, Point } from 'fabric';
 import type { ToolType } from '~/types/toolbar';
 
 export const useFabricStore = defineStore('fabric', () => {
@@ -6,6 +6,7 @@ export const useFabricStore = defineStore('fabric', () => {
   const activeTool = ref<ToolType>('select');
   const savedActiveTool = ref<ToolType>('select');
   const mousePosition = ref({ x: 0, y: 0 });
+  const zoom = ref(1);
 
   function resizeCanvas() {
     if (!canvas.value) {
@@ -89,6 +90,57 @@ export const useFabricStore = defineStore('fabric', () => {
     return canvas.value?.getObjects().find(obj => obj.get('id') === id);
   }
 
+  async function setZoom(val: number, options?: { manual?: boolean; point?: Point; velocity?: number }) {
+    if (!canvas.value) return;
+
+    // Limit the zoom value
+    val = Math.max(0.1, Math.min(20, val));
+
+    const { manual = false, point, velocity = 1 } = options ?? {};
+    const zoomPoint = point ?? new Point(
+      canvas.value.getWidth() / 2,
+      canvas.value.getHeight() / 2,
+    );
+
+    if (!manual) {
+      // Direct zoom if "manual" mode is disabled
+      canvas.value.zoomToPoint(zoomPoint, val);
+      canvas.value.renderAll();
+    }
+    else {
+      // Smooth zoom (animated) in "manual" mode
+      await animateZoom(val, zoomPoint, velocity);
+    }
+
+    // Update the zoom value
+    zoom.value = val;
+  }
+
+  // Support function for smooth zoom animation
+  async function animateZoom(targetZoom: number, zoomPoint: Point, velocity = 1) {
+    const step = 0.01 * velocity; // Small zoom step for animation
+    const intervalTime = 10; // Time interval between steps (ms)
+
+    const isZoomingIn = targetZoom > zoom.value;
+    return new Promise<void>((resolve) => {
+      let currentZoom = zoom.value;
+
+      const interval = setInterval(() => {
+        // Stop the interval when the target zoom value is reached
+        if ((isZoomingIn && currentZoom >= targetZoom) || (!isZoomingIn && currentZoom <= targetZoom)) {
+          clearInterval(interval);
+          resolve();
+          return;
+        }
+
+        // Update the zoom value
+        currentZoom = isZoomingIn ? currentZoom + step : currentZoom - step;
+        canvas.value?.zoomToPoint(zoomPoint, currentZoom);
+        canvas.value?.renderAll();
+      }, intervalTime);
+    });
+  }
+
   return {
     canvas,
     init,
@@ -96,9 +148,11 @@ export const useFabricStore = defineStore('fabric', () => {
     activeTool,
     savedActiveTool,
     mousePosition,
+    zoom,
     saveActiveTool,
     restoreActiveTool,
     enableTempMoveMode,
     getObjectById,
+    setZoom,
   };
 });

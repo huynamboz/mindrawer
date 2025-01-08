@@ -46,10 +46,8 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
   if (opt.e.ctrlKey) {
     const delta = opt.e.deltaY;
     let zoom = canvas.value.getZoom();
-    zoom *= 0.99 ** delta;
-    if (zoom > 20) zoom = 20;
-    if (zoom < 0.1) zoom = 0.1;
-    canvas.value.zoomToPoint(new Point(opt.e.offsetX, opt.e.offsetY), zoom);
+    zoom *= 0.985 ** delta;
+    fabricStore.setZoom(zoom, { point: new Point(opt.e.offsetX, opt.e.offsetY) });
   }
   else {
     // Di chuyển canvas (pan)
@@ -59,13 +57,12 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
     // Đảo chiều giá trị delta để pan hoạt động đúng hướng
     vpt[4] -= e.deltaX;
     vpt[5] -= e.deltaY;
+    // Set coord to fix bug object move but control dot not
+    canvas.value.getActiveObjects().forEach((o) => {
+      o.setCoords();
+    });
+    canvas.value.renderAll();
   }
-
-  // Set coord to fix bug object move but control dot not
-  canvas.value.getActiveObjects().forEach((o) => {
-    o.setCoords();
-  });
-  canvas.value.renderAll();
 }
 
 function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {

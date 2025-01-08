@@ -100,7 +100,7 @@ watch(space, (v) => {
 </script>
 
 <template>
-  <div class="fixed z-50 bottom-8 w-fit -translate-x-1/2 left-1/2 h-[40px] shadow-sm bg-white rounded-lg border">
+  <div class="fixed z-50 bottom-5 w-fit -translate-x-1/2 left-1/2 h-[40px] shadow-sm bg-white rounded-lg border">
     <div class="relative w-fit flex items-center gap-1 px-1 py-1 ">
       <p class="text-[10px] whitespace-nowrap text-gray-500 absolute -top-6 left-1/2 transform -translate-x-1/2">
         To move canvas, hold <span class="font-bold">Space</span> and drag or use <span class="font-bold">Hand

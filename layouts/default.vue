@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import ToolBar from '~/components/base/ToolBar.vue';
+import ZoomControl from '~/components/base/ZoomControl.vue';
 </script>
 
 <template>
   <div class="w-full h-lvh">
     <ToolBar />
+    <ZoomControl />
     <a
       href="https://github.com/huynamboz/mindrawer"
       target="_blank"
