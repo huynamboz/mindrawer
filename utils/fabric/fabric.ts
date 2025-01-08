@@ -138,11 +138,26 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         return new Line([0, 0, 0, 0], options);
 
     case 'triangle':
-      return new Triangle(options);
+    {
+      const triangle = new Triangle(options);
+      triangle.on('selected', (o) => {
+        o.target.perPixelTargetFind = false;
+      });
+      triangle.on('deselected', (o) => {
+        o.target.perPixelTargetFind = true;
+      });
+      return triangle;
+    }
 
     case 'rect':
-    { const rect = new Rect(options);
-      console.log(rect);
+    {
+      const rect = new Rect(options);
+      rect.on('selected', (o) => {
+        o.target.perPixelTargetFind = false;
+      });
+      rect.on('deselected', (o) => {
+        o.target.perPixelTargetFind = true;
+      });
       return rect;
     }
 
@@ -150,10 +165,20 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
       return new Circle(options);
 
     case 'ellipse':
-      return new Ellipse({ ...options, rx: 0, // Initial horizontal radius
-        ry: 0, // Initial vertical radius
-        fill: 'transparent', // Fill color
+    {
+      const ellipse = new Ellipse({ ...options, rx: 0,
+        ry: 0,
+        fill: 'transparent',
         stroke: 'black' });
+      ellipse.on('selected', (o) => {
+        o.target.perPixelTargetFind = false;
+      });
+      ellipse.on('deselected', (o) => {
+        o.target.perPixelTargetFind = true;
+      });
+      return ellipse;
+    }
+
     case 'text':
     {
       const textbox = new Textbox('', {

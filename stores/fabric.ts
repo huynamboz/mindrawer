@@ -32,7 +32,7 @@ export const useFabricStore = defineStore('fabric', () => {
   // preserveObjectStacking - Không thay đổi z-index của object khi click
   // targetFindTolerance - vùng xung quanh object để có thể click trúng
   function init(canvasElement: HTMLCanvasElement) {
-    canvas.value = markRaw(new Canvas(canvasElement, { renderOnAddRemove: false, preserveObjectStacking: true, targetFindTolerance: 10 }));
+    canvas.value = markRaw(new Canvas(canvasElement, { uniformScaling: false, renderOnAddRemove: false, preserveObjectStacking: true, targetFindTolerance: 10 }));
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     document.addEventListener('mousemove', (e) => {

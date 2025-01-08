@@ -76,6 +76,13 @@ onKeyStroke(toolbars.value.map(i => i.key), (e) => {
     fabricStore.setActiveTool(toolbar.action);
 });
 
+onKeyStroke('Backspace', () => {
+  if (!fabricStore.canvas) return;
+  const objects = fabricStore.canvas.getActiveObjects();
+  fabricStore.canvas.remove(...objects);
+  fabricStore.canvas.renderAll();
+});
+
 watch(space, (v) => {
   if (fabricStore.activeTool === 'move' && fabricStore.savedActiveTool === 'move') return;
 
