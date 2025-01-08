@@ -2,34 +2,44 @@ import { type IText, Triangle, type FabricObjectProps, Rect, Circle, Line, Ellip
 import { v4 as uuidv4 } from 'uuid';
 
 // import { type ObjectEvents, type FabricObject, type Line, type Group, Circle, type Rect, type Ellipse, type Triangle, type FabricObjectProps, type SerializedObjectProps } from 'fabric';
+import { makeLine, makeCircle, CIRCLE_RADIUS, updateLinePosition } from './lineControl';
 import type { ToolType } from '~/types/toolbar';
 
 interface ObjectOptions {
   startPoints?: number[];
 }
+
+export const defaultObjectControl = {
+  cornerColor: 'white',
+  cornerStrokeColor: '#0b99ff',
+  borderColor: '#0b99ff',
+  cornerSize: 6,
+  transparentCorners: false,
+};
+
+export const defaultObjectOptions = {
+  fill: 'transparent',
+  stroke: 'black',
+  width: 0,
+  height: 0,
+  left: 0,
+  top: 0,
+  evented: true,
+  selectable: true,
+  prevEvented: true,
+  prevSelectable: true,
+  perPixelTargetFind: true,
+  ...defaultObjectControl,
+  // set strokeUniform and noScaleCache to not resize stroke when resize object
+  strokeUniform: true,
+  noScaleCache: false,
+};
+
 export function createFabricObject(type: ToolType, option: Partial<FabricObjectProps>, moreOptions?: Partial<ObjectOptions>) {
-  const defaultOptions = {
-    fill: 'transparent',
-    stroke: 'black',
-    width: 0,
-    height: 0,
-    left: 0,
-    top: 0,
-    evented: true,
-    selectable: true,
-    prevEvented: true,
-    prevSelectable: true,
-    perPixelTargetFind: true,
-
-    // set strokeUniform and noScaleCache to not resize stroke when resize object
-    strokeUniform: true,
-    noScaleCache: false,
-  };
-
   const fabricStore = useFabricStore();
 
   const canvas = fabricStore.canvas;
-  const options = { ...defaultOptions, ...option };
+  const options = { ...defaultObjectOptions, ...option };
   switch (type) {
     case 'line':
       if (moreOptions?.startPoints) {
@@ -99,7 +109,6 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         // if selected then show all points, if deselected then hide all points
         [line, line2].forEach((l) => {
           l.on('mousedown', () => {
-            console.log('mousedown');
             [firstPoint, midPoint, endPoint].forEach((p) => {
               p.set('visible', true);
               canvas?.bringObjectToFront(p);
@@ -133,6 +142,7 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
 
     case 'rect':
     { const rect = new Rect(options);
+      console.log(rect);
       return rect;
     }
 

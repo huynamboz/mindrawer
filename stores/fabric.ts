@@ -5,6 +5,7 @@ export const useFabricStore = defineStore('fabric', () => {
   const canvas = ref<Canvas>();
   const activeTool = ref<ToolType>('select');
   const savedActiveTool = ref<ToolType>('select');
+  const mousePosition = ref({ x: 0, y: 0 });
 
   function resizeCanvas() {
     if (!canvas.value) {
@@ -34,6 +35,9 @@ export const useFabricStore = defineStore('fabric', () => {
     canvas.value = markRaw(new Canvas(canvasElement, { renderOnAddRemove: false, preserveObjectStacking: true, targetFindTolerance: 10 }));
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    document.addEventListener('mousemove', (e) => {
+      mousePosition.value = { x: e.clientX, y: e.clientY };
+    });
   }
 
   function setActiveTool(action: ToolType) {
@@ -91,6 +95,7 @@ export const useFabricStore = defineStore('fabric', () => {
     setActiveTool,
     activeTool,
     savedActiveTool,
+    mousePosition,
     saveActiveTool,
     restoreActiveTool,
     enableTempMoveMode,

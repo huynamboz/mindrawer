@@ -2,6 +2,8 @@
 import { type Textbox, type FabricObject, type FabricObjectProps, type ObjectEvents, type SerializedObjectProps, Point, type TPointerEventInfo, type TPointerEvent } from 'fabric';
 import { ref, computed, onMounted } from 'vue';
 import { useKeyModifier } from '@vueuse/core';
+import { handlePasteImage } from '~/utils/fabric/image';
+import { createFabricObject } from '~/utils/fabric/fabric';
 
 useHead({
   htmlAttrs: { lang: 'en' },
@@ -33,6 +35,7 @@ const startX = ref<number>(0);
 const startY = ref<number>(0);
 const fabricObj = ref<FabricObject<Partial<FabricObjectProps>, SerializedObjectProps, ObjectEvents> | null>();
 
+// Pinch to zoom - https://turriate.com/articles/how-to-pinch-to-zoom-2-finger-pan-fabricjs-canvas
 function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
   if (!canvas.value) {
     return;
@@ -57,6 +60,8 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
     vpt[4] -= e.deltaX;
     vpt[5] -= e.deltaY;
   }
+
+  // Set coord to fix bug object move but control dot not
   canvas.value.getActiveObjects().forEach((o) => {
     o.setCoords();
   });
@@ -191,6 +196,7 @@ function handleMouseUp() {
       if (fabricObj.value && !dragTools.includes(fabricStore.activeTool)) {
         fabricStore.setActiveTool('select');
         canvas.value.setActiveObject(fabricObj.value);
+        canvas.value.renderAll();
         fabricObj.value = null;
       }
     }
@@ -220,6 +226,8 @@ onMounted(() => {
   canvas.value.on('mouse:move', handleMouseMove);
 
   canvas.value.on('mouse:up', handleMouseUp);
+
+  document.addEventListener('paste', handlePasteImage);
 });
 </script>
 
