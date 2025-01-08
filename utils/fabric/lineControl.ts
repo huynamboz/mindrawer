@@ -1,12 +1,12 @@
 import {
+  type Group,
   Line,
   type FabricObject,
   Point,
   Circle,
   type FabricObjectProps,
   type ObjectEvents,
-  type SerializedObjectProps,
-} from 'fabric';
+  type SerializedObjectProps } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
 export const CIRCLE_RADIUS = 6;
@@ -41,6 +41,8 @@ export function makeLine(coords: [number, number, number, number]) {
     strokeWidth: 1,
     selectable: true,
     evented: true,
+    noScaleCache: false,
+    strokeUniform: true,
   });
 
   // must select by per pixel to select line
@@ -180,4 +182,19 @@ function calcLinePoints(obj: Line) {
   const point1 = new Point(points.x1, points.y1).transform(matrix);
   const point2 = new Point(points.x2, points.y2).transform(matrix);
   return { point1, point2 };
+}
+
+export function updateLinePositionWrapper(target: FabricObject) {
+  const canvas = useFabricStore().canvas;
+  if (!canvas) return;
+
+  const group = canvas.getActiveObject();
+  if (group && group.type === 'activeselection') {
+    (group as Group).forEachObject((o) => {
+      updateLinePosition(o);
+    });
+  }
+  else {
+    updateLinePosition(target);
+  }
 }

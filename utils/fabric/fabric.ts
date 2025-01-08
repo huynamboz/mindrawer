@@ -54,15 +54,25 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         canvas?.add(line, firstPoint);
         canvas?.bringObjectToFront(firstPoint);
         canvas?.bringObjectToFront(endPoint);
-        canvas?.on('object:moving', function (e) {
-          updateLinePosition(e.target);
-        });
 
         // if selected then show all points, if deselected then hide all points
         line.on('mousedown', () => {
           [firstPoint, endPoint].forEach((p) => {
             p.set('visible', true);
           });
+        });
+
+        line.on('selected', (e) => {
+          [firstPoint, endPoint].forEach((p) => {
+            p.set('visible', true);
+          });
+          updateLinePosition(e.target);
+          console.log('se');
+        });
+
+        line.on('moving', () => {
+          console.log('moving');
+          updateLinePosition(line);
         });
 
         // if clicked outside of line then hide all points
