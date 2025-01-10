@@ -70,11 +70,6 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
           console.log('se');
         });
 
-        line.on('moving', () => {
-          console.log('moving');
-          updateLinePosition(line);
-        });
-
         // if clicked outside of line then hide all points
         canvas?.on('mouse:down', function (e) {
           const target = e.target;
@@ -86,7 +81,9 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
           };
         });
 
-        endPoint.set({ updateLinePosition });
+        endPoint.set({
+          updateLinePosition,
+        });
         // asign points to line
         line.set({
           pointIds: [firstPoint.get('id'), endPoint.get('id')],
@@ -104,22 +101,24 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         const line = makeLine([x1, y1, x1, y1]);
         const line2 = makeLine([x1, y1, x1, y1]);
         const lineId = line.get('id');
-        const line2Id = line2.get('id');
+        const lineId2 = line2.get('id');
 
-        const firstPoint = makeCircle(line.get('x1') - CIRCLE_RADIUS, line.get('y1') - CIRCLE_RADIUS, [lineId, line2Id], 'start');
-        const midPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, line2Id], 'mid');
-        const endPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, line2Id], 'end');
+        const firstPoint = makeCircle(line.get('x1') - CIRCLE_RADIUS, line.get('y1') - CIRCLE_RADIUS, [lineId, lineId2], 'start');
+        const midPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, lineId2], 'mid');
+        const endPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, lineId2], 'end');
 
         canvas?.add(line, line2, firstPoint, midPoint);
         canvas?.bringObjectToFront(firstPoint);
         canvas?.bringObjectToFront(midPoint);
         canvas?.bringObjectToFront(endPoint);
-        canvas?.on('object:moving', function (e) {
-          updateLinePosition(e.target);
-        });
 
         // if selected then show all points, if deselected then hide all points
         [line, line2].forEach((l) => {
+          // l.on('selected', () => {
+          //   [firstPoint, midPoint, endPoint].forEach((p) => {
+          //     p.set('visible', true);
+          //   });
+          // });
           l.on('mousedown', () => {
             [firstPoint, midPoint, endPoint].forEach((p) => {
               p.set('visible', true);
@@ -138,19 +137,22 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
               p.set('visible', false);
             });
             canvas?.renderAll();
-          };
+          }
         });
 
-        endPoint.set({ updateLinePosition, midPointId: midPoint.get('id') });
+        const groupId = uuidv4();
+        endPoint.set({ groupId, updateLinePosition, midPointId: midPoint.get('id'), test: true, items: [line, line2, firstPoint, midPoint, endPoint] });
 
         line.set({
+          groupId,
           pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')],
-          label: 'line-three-dot',
+          lineIds: [lineId, lineId2],
         });
 
         line2.set({
+          groupId,
           pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')],
-          label: 'line-three-dot',
+          lineIds: [lineId, lineId2],
         });
         return endPoint;
       }

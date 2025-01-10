@@ -6,7 +6,8 @@ import {
   Circle,
   type FabricObjectProps,
   type ObjectEvents,
-  type SerializedObjectProps } from 'fabric';
+  type SerializedObjectProps,
+  type ActiveSelection } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
 export const CIRCLE_RADIUS = 4;
@@ -68,9 +69,13 @@ export function updateLinePosition(
 
   const p = target;
 
+  // Trường hợp line có 2 control points (pointIds.length === 2)
   if (p.type === 'line') {
     const pointIds = p.get('pointIds') as string[];
+    const lineIds = p.get('lineIds') as string[];
     console.log(pointIds);
+
+    // Nếu line có 2 control points
     if (pointIds && pointIds.length === 2) {
       const firstPoint = fabricStore?.getObjectById(pointIds[0]) as Circle;
       const secondPoint = fabricStore?.getObjectById(pointIds[1]) as Circle;
@@ -89,7 +94,104 @@ export function updateLinePosition(
       firstPoint.setCoords();
       secondPoint.setCoords();
     }
+
+    // Nếu line có 3 control points
+    else if (pointIds && pointIds.length === 3) {
+      const firstPoint = fabricStore?.getObjectById(pointIds[0]) as Circle;
+      const midPoint = fabricStore?.getObjectById(pointIds[1]) as Circle;
+      const endPoint = fabricStore?.getObjectById(pointIds[2]) as Circle;
+
+      const firstLine = fabricStore?.getObjectById(lineIds[0]) as Line;
+      const secondLine = fabricStore?.getObjectById(lineIds[1]) as Line;
+
+      const isMoveFirstLine = firstLine.get('id') === p.get('id');
+      // Tính toán vị trí các điểm
+      const { point1: pointFirstOfLineTarget, point2: pointSecondOfLineTarget } = calcLinePoints(p as Line);
+
+      let movedX = 0, movedY = 0;
+
+      // if move first line
+      if (isMoveFirstLine) {
+        const { point2: pointSecondOfSecondLine } = calcLinePoints(secondLine as Line);
+        console.log('moving first line');
+        // tính toán khoảng cách di chuyển - nếu di chuyển first line thì khoảng
+        // cách di chuyển bằng điểm đầu của firstpoint point trừ cho điểm đầu sau khi di chuyển của first line (vì point chưa di chuyển)
+        movedX = firstPoint.left - (pointFirstOfLineTarget.x - CIRCLE_RADIUS);
+        movedY = firstPoint.top - (pointFirstOfLineTarget.y - CIRCLE_RADIUS);
+
+        firstPoint.set({
+          left: pointFirstOfLineTarget.x - CIRCLE_RADIUS,
+          top: pointFirstOfLineTarget.y - CIRCLE_RADIUS,
+        });
+
+        midPoint.set({
+          left: pointSecondOfLineTarget.x - CIRCLE_RADIUS,
+          top: pointSecondOfLineTarget.y - CIRCLE_RADIUS,
+        });
+
+        // điểm cuối sẽ đi theo x2, y2 của second line
+        endPoint.set({
+          left: pointSecondOfSecondLine.x - movedX - CIRCLE_RADIUS,
+          top: pointSecondOfSecondLine.y - movedY - CIRCLE_RADIUS,
+        });
+
+        const group = fabricStore.canvas?.getActiveObject();
+        if (group && group.type !== 'activeselection') {
+          secondLine.set({
+            x1: pointSecondOfLineTarget.x,
+            y1: pointSecondOfLineTarget.y,
+            // tính toán khoảng cách sau khi di chuyển từ vị trí ban đầu
+            x2: pointSecondOfSecondLine.x - movedX,
+            y2: pointSecondOfSecondLine.y - movedY,
+          });
+        }
+      }
+      else {
+        const { point1: pointFirstOfFirstLine } = calcLinePoints(firstLine as Line);
+        // tính toán khoảng cách di chuyển - nếu di chuyển second line thì khoảng
+        // cách di chuyển bằng điểm đầu của mid point trừ cho điểm đầu  sau khi di chuyển của second line (vì point chưa di chuyển)
+        movedX = midPoint.left - (pointFirstOfLineTarget.x - CIRCLE_RADIUS);
+        movedY = midPoint.top - (pointFirstOfLineTarget.y - CIRCLE_RADIUS);
+
+        console.log('moving second line', pointFirstOfFirstLine.x, firstLine.get('x1'));
+        firstPoint.set({
+          left: firstPoint.left - movedX,
+          top: firstPoint.top - movedY,
+        });
+
+        midPoint.set({
+          left: pointFirstOfLineTarget.x - CIRCLE_RADIUS,
+          top: pointFirstOfLineTarget.y - CIRCLE_RADIUS,
+        });
+
+        // điểm cuối sẽ đi theo x2, y2 của second line
+        endPoint.set({
+          left: pointSecondOfLineTarget.x - CIRCLE_RADIUS,
+          top: pointSecondOfLineTarget.y - CIRCLE_RADIUS,
+        });
+
+        const group = fabricStore.canvas?.getActiveObject() as ActiveSelection;
+        if (group && group.type !== 'activeselection') {
+          firstLine.set({
+            x2: pointFirstOfLineTarget.x,
+            y2: pointFirstOfLineTarget.y,
+            // tính toán khoảng cách sau khi di chuyển từ vị trí ban đầu
+            x1: pointFirstOfFirstLine.x - movedX,
+            y1: pointFirstOfFirstLine.y - movedY,
+          });
+        }
+      }
+
+      firstPoint.setCoords();
+      console.log('first point', firstPoint.left);
+      midPoint.setCoords();
+      endPoint.setCoords();
+      firstLine.setCoords();
+      secondLine.setCoords();
+    }
   }
+
+  // Trường hợp circle
   else if (p.type === 'circle') {
     if ('pos' in p && 'lines' in p) {
       const firstLineId = (p as any).lines[0] as string;
@@ -176,7 +278,7 @@ export function updateLinePosition(
  * console.log(point1, point2);
  * // { x: 100, y: 100 } { x: 200, y: 200 }
   */
-function calcLinePoints(obj: Line) {
+export function calcLinePoints(obj: Line) {
   const points = obj.calcLinePoints();
   const matrix = obj.calcTransformMatrix();
   const point1 = new Point(points.x1, points.y1).transform(matrix);

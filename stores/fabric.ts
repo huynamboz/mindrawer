@@ -1,3 +1,4 @@
+import type { ActiveSelection, FabricObject } from 'fabric';
 import { Canvas, Point } from 'fabric';
 import type { ToolType } from '~/types/toolbar';
 import { defaultObjectControl } from '~/utils/fabric/fabric';
@@ -57,9 +58,30 @@ export const useFabricStore = defineStore('fabric', () => {
       updateLinePositionWrapper(e.target);
     });
 
+    canvas.value.on('object:resizing', function (e) {
+      updateLinePositionWrapper(e.target);
+    });
+
     canvas.value.on('selection:created', function (event) {
       const group = canvas.value?.getActiveObject();
       if (group && group.type === 'activeselection' && event.e?.target) {
+        // if not select full 3 control line then remove out of selection
+        const itemWillRemove: { [key: string]: FabricObject[] } = {};
+        (group as ActiveSelection).getObjects().forEach((o) => {
+          const groupId = o.get('groupId');
+          if (groupId) {
+            if (!itemWillRemove[groupId]) {
+              itemWillRemove[groupId] = [];
+            }
+            itemWillRemove[groupId].push(o);
+          }
+        });
+
+        for (const item in itemWillRemove) {
+          if (itemWillRemove[item].length < 2)
+            (group as ActiveSelection).remove?.(...itemWillRemove[item]);
+        }
+
         group.set(defaultObjectControl);
       }
     });

@@ -62,7 +62,8 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
     canvas.value.getActiveObjects().forEach((o) => {
       o.setCoords();
     });
-    canvas.value.renderAll();
+    canvas.value.getActiveObject()?.setCoords();
+    canvas.value.requestRenderAll();
   }
 }
 
@@ -108,6 +109,7 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
 
 function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
   const evt = opt.e;
+
   if (isMouseDown.value) {
     isDragging.value = true;
   }
