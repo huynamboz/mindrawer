@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { type Textbox, type FabricObject, type FabricObjectProps, type ObjectEvents, type SerializedObjectProps, Point, type TPointerEventInfo, type TPointerEvent } from 'fabric';
+import {
+  type Textbox,
+  type FabricObject,
+  type FabricObjectProps,
+  type ObjectEvents,
+  type SerializedObjectProps,
+  Point,
+  type TPointerEventInfo,
+  type TPointerEvent,
+} from 'fabric';
 import { ref, computed, onMounted } from 'vue';
 import { useKeyModifier } from '@vueuse/core';
 import { handlePasteImage } from '~/utils/fabric/image';
@@ -17,8 +26,10 @@ useSeoMeta({
   author: 'huynamboz',
   title: 'Mindrawer - A virtual whiteboard for everyone',
   ogTitle: 'Mindrawer - A virtual whiteboard for everyone',
-  description: 'Mindrawer is a simple drawing tool that allows you to draw with ease',
-  ogDescription: 'Mindrawer is a simple drawing tool that allows you to draw with ease',
+  description:
+    'Mindrawer is a simple drawing tool that allows you to draw with ease',
+  ogDescription:
+    'Mindrawer is a simple drawing tool that allows you to draw with ease',
   ogImage: '/public/images/thumbnail.png',
 });
 
@@ -34,7 +45,11 @@ const lastPosX = ref<number>(0);
 const lastPosY = ref<number>(0); // Store last mouse positions
 const startX = ref<number>(0);
 const startY = ref<number>(0);
-const fabricObj = ref<FabricObject<Partial<FabricObjectProps>, SerializedObjectProps, ObjectEvents> | null>();
+const fabricObj = ref<FabricObject<
+  Partial<FabricObjectProps>,
+  SerializedObjectProps,
+  ObjectEvents
+> | null>();
 
 // Pinch to zoom - https://turriate.com/articles/how-to-pinch-to-zoom-2-finger-pan-fabricjs-canvas
 function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
@@ -48,7 +63,9 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
     const delta = opt.e.deltaY;
     let zoom = canvas.value.getZoom();
     zoom *= 0.985 ** delta;
-    fabricStore.setZoom(zoom, { point: new Point(opt.e.offsetX, opt.e.offsetY) });
+    fabricStore.setZoom(zoom, {
+      point: new Point(opt.e.offsetX, opt.e.offsetY),
+    });
   }
   else {
     // Di chuyển canvas (pan)
@@ -75,8 +92,10 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
   const evt = opt.e;
   isMouseDown.value = true;
   if (fabricStore.activeTool === 'move') {
-    lastPosX.value = 'clientX' in evt ? evt.clientX : (evt as TouchEvent).touches[0].clientX;
-    lastPosY.value = 'clientX' in evt ? evt.clientY : (evt as TouchEvent).touches[0].clientY;
+    lastPosX.value
+      = 'clientX' in evt ? evt.clientX : (evt as TouchEvent).touches[0].clientX;
+    lastPosY.value
+      = 'clientX' in evt ? evt.clientY : (evt as TouchEvent).touches[0].clientY;
   }
   else {
     const pointer = canvas.value.getPointer(evt);
@@ -84,15 +103,21 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
     startY.value = pointer.y;
 
     if (!dragTools.includes(fabricStore.activeTool)) {
-      fabricObj.value = markRaw(createFabricObject(fabricStore.activeTool, {
-        left: startX.value,
-        top: startY.value,
-        stroke: 'black',
-        strokeWidth: 1,
-        fill: 'transparent',
-      }, {
-        startPoints: [startX.value, startY.value],
-      }));
+      fabricObj.value = markRaw(
+        createFabricObject(
+          fabricStore.activeTool,
+          {
+            left: startX.value,
+            top: startY.value,
+            stroke: 'black',
+            strokeWidth: 1,
+            fill: 'transparent',
+          },
+          {
+            startPoints: [startX.value, startY.value],
+          },
+        ),
+      );
       if (fabricObj.value) {
         canvas.value.add(fabricObj.value);
         if (fabricObj.value.type === 'textbox') {
@@ -119,14 +144,14 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
   if (fabricStore.activeTool === 'move') {
     const vpt = canvas.value.viewportTransform;
     if ('clientX' in evt) {
-      vpt[4] += evt.clientX - (lastPosX.value);
-      vpt[5] += evt.clientY - (lastPosY.value);
+      vpt[4] += evt.clientX - lastPosX.value;
+      vpt[5] += evt.clientY - lastPosY.value;
       lastPosX.value = evt.clientX;
       lastPosY.value = evt.clientY;
     }
     else {
-      vpt[4] += evt.touches[0].clientX - (lastPosX.value);
-      vpt[5] += evt.touches[0].clientY - (lastPosY.value);
+      vpt[4] += evt.touches[0].clientX - lastPosX.value;
+      vpt[5] += evt.touches[0].clientY - lastPosY.value;
       lastPosX.value = evt.touches[0].clientX;
       lastPosY.value = evt.touches[0].clientY;
     }
@@ -134,10 +159,10 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
   }
   else {
     const pointer = canvas.value.getPointer(evt);
-    const width = pointer.x - (startX.value);
-    const height = pointer.y - (startY.value);
-    const rx = Math.abs(pointer.x - (startX.value)) / 2; // Half width
-    const ry = Math.abs(pointer.y - (startY.value)) / 2; // Half height
+    const width = pointer.x - startX.value;
+    const height = pointer.y - startY.value;
+    const rx = Math.abs(pointer.x - startX.value) / 2; // Half width
+    const ry = Math.abs(pointer.y - startY.value) / 2; // Half height
     const left = Math.min(pointer.x, startX.value);
     const top = Math.min(pointer.y, startY.value);
 
@@ -167,7 +192,10 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
           });
           if ('updateLinePosition' in fabricObj.value) {
             if (fabricStore.activeTool === 'line3') {
-              (fabricObj.value as any).updateLinePosition(fabricObj.value, true);
+              (fabricObj.value as any).updateLinePosition(
+                fabricObj.value,
+                true,
+              );
             }
             else {
               (fabricObj.value as any).updateLinePosition(fabricObj.value);
@@ -188,7 +216,12 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
 function handleMouseUp() {
   try {
     if (!canvas.value) return;
-    if (!isDragging.value && fabricObj.value && fabricObj.value.type !== 'textbox' && (fabricObj.value.width < 2 || fabricObj.value.height < 2)) {
+    if (
+      !isDragging.value
+      && fabricObj.value
+      && fabricObj.value.type !== 'textbox'
+      && (fabricObj.value.width < 2 || fabricObj.value.height < 2)
+    ) {
       canvas.value.remove(fabricObj.value);
       return;
     }

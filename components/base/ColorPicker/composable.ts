@@ -112,6 +112,9 @@ export function rgb2hsv({ r, g, b }: any) {
 }
 
 export function convertRGBAStringToHex(rgba: string) {
-  const rgbaArr = rgba.replace(/rgba\(|\)/g, '').split(',').map(item => parseInt(item));
+  const rgbaArr = rgba
+    .replace(/rgba\(|\)/g, '')
+    .split(',')
+    .map(item => parseInt(item));
   return rgb2hex({ r: rgbaArr[0], g: rgbaArr[1], b: rgbaArr[2] }, true);
 }

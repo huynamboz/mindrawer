@@ -1,7 +1,7 @@
 <template>
   <div
-    class="saturation overflow-hidden rounded-lg border"
     ref="saturationParent"
+    class="saturation overflow-hidden rounded-lg border"
     @mousedown.prevent.stop="selectSaturation"
   >
     <canvas ref="canvasSaturation" />
@@ -80,10 +80,8 @@ export default defineComponent({
       };
     },
     selectSaturation(e: any) {
-      const {
-        top: saturationTop,
-        left: saturationLeft,
-      } = this.$el.getBoundingClientRect();
+      const { top: saturationTop, left: saturationLeft }
+        = this.$el.getBoundingClientRect();
       const ctx = e.target.getContext('2d');
 
       const mousemove = (e: any) => {

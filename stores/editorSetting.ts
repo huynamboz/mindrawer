@@ -16,10 +16,13 @@ export const useEditorStore = defineStore('editor-settings', () => {
     recentStrokeColors: ['#000000'],
     strokeWidth: 1,
     strokeDashArray: [],
-    opacity: 1,
+    opacity: 100,
   });
 
-  function setSetting<K extends keyof EditorSetting>(key: K, value: EditorSetting[K]) {
+  function setSetting<K extends keyof EditorSetting>(
+    key: K,
+    value: EditorSetting[K],
+  ) {
     settings.value[key] = value;
   }
 

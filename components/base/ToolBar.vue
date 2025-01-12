@@ -65,16 +65,18 @@ const isAnyTextboxEditing = () => {
   return objects.some(i => i.get('isEditing'));
 };
 
-onKeyStroke(toolbars.value.map(i => i.key), (e) => {
-  const toolbar = toolbars.value.find(t => t.key === e.key);
+onKeyStroke(
+  toolbars.value.map(i => i.key),
+  (e) => {
+    const toolbar = toolbars.value.find(t => t.key === e.key);
 
-  // dont switch tool if current object active is textbox
-  if (isAnyTextboxEditing()) {
-    return;
-  }
-  if (toolbar)
-    fabricStore.setActiveTool(toolbar.action);
-});
+    // dont switch tool if current object active is textbox
+    if (isAnyTextboxEditing()) {
+      return;
+    }
+    if (toolbar) fabricStore.setActiveTool(toolbar.action);
+  },
+);
 
 onKeyStroke('Backspace', () => {
   if (!fabricStore.canvas || isAnyTextboxEditing()) return;
@@ -84,7 +86,11 @@ onKeyStroke('Backspace', () => {
 });
 
 watch(space, (v) => {
-  if (fabricStore.activeTool === 'move' && fabricStore.savedActiveTool === 'move') return;
+  if (
+    fabricStore.activeTool === 'move'
+    && fabricStore.savedActiveTool === 'move'
+  )
+    return;
 
   if (isAnyTextboxEditing()) {
     return;
@@ -100,13 +106,20 @@ watch(space, (v) => {
 </script>
 
 <template>
-  <div class="fixed z-50 bottom-5 w-fit -translate-x-1/2 left-1/2 h-[40px] shadow-sm bg-white rounded-lg border">
-    <div class="relative w-fit flex items-center gap-1 px-1 py-1 ">
-      <p class="text-[10px] whitespace-nowrap text-gray-500 absolute -top-6 left-1/2 transform -translate-x-1/2">
-        To move canvas, hold <span class="font-bold">Space</span> and drag or use <span class="font-bold">Hand
+  <div
+    class="fixed z-50 bottom-5 w-fit -translate-x-1/2 left-1/2 h-[40px] shadow-sm bg-white rounded-lg border"
+  >
+    <div class="relative w-fit flex items-center gap-1 px-1 py-1">
+      <p
+        class="text-[10px] whitespace-nowrap text-gray-500 absolute -top-6 left-1/2 transform -translate-x-1/2"
+      >
+        To move canvas, hold <span class="font-bold">Space</span> and drag or
+        use
+        <span class="font-bold">Hand
 
           <span class="i-lineicons-hand" />
-        </span> tool
+        </span>
+        tool
       </p>
       <!-- <div class="h-full border-r flex items-center gap-1 px-1">
       <div
@@ -132,13 +145,17 @@ watch(space, (v) => {
         class="h-full relative flex items-center gap-1"
       >
         <span
-          :class="{ 'text-gray-800': fabricStore.activeTool === toolbar.action }"
+          :class="{
+            'text-gray-800': fabricStore.activeTool === toolbar.action,
+          }"
           class="absolute -top-[1px] left-1 text-gray-400 text-[9px]"
         >
           {{ toolbar.key }}
         </span>
         <div
-          :class="{ '!bg-slate-200': fabricStore.activeTool === toolbar.action }"
+          :class="{
+            '!bg-slate-200': fabricStore.activeTool === toolbar.action,
+          }"
           class="w-8 h-8 hover:bg-slate-100 flex cursor-pointer rounded-md items-center justify-center"
           @click="fabricStore.setActiveTool(toolbar.action)"
         >
