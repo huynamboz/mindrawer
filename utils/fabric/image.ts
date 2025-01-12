@@ -26,8 +26,8 @@ export function handlePasteImage(e: ClipboardEvent) {
           canvas?.add(img);
 
           img.set({
-            left: mousePos.x - (img.width / 4), // div 4 because scaleX is 0.5
-            top: mousePos.y - (img.height / 4),
+            left: mousePos.x - img.width / 4, // div 4 because scaleX is 0.5
+            top: mousePos.y - img.height / 4,
           });
           img.setCoords();
           canvas?.setActiveObject(img);

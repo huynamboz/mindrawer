@@ -1,14 +1,16 @@
 <template>
   <!-- <canvas /> -->
-   <div class="h-full w-full flex items-center justify-center gap-2 pl-2">
-    <div class="min-w-[20px] h-[20px] rounded-sm" :style="{ backgroundColor: color }">
-    </div>
+  <div class="h-full w-full flex items-center justify-center gap-2 pl-2">
+    <div
+      class="min-w-[20px] h-[20px] rounded-sm"
+      :style="{ backgroundColor: color }"
+    />
     <input
       type="text"
       :value="color"
       class="h-[30px] w-full bg-transparent outline-none"
-    />
-   </div>
+    >
+  </div>
 </template>
 
 <script lang="ts">
@@ -50,14 +52,11 @@ export default defineComponent({
       // const height = this.height;
       // const size = this.alphaSize;
       // const canvasSquare = createAlphaSquare(size);
-
       // const ctx = canvas.getContext('2d');
       // canvas.width = width;
       // canvas.height = height;
-
       // ctx.fillStyle = ctx.createPattern(canvasSquare, 'repeat');
       // ctx.fillRect(0, 0, width, height);
-
       // ctx.fillStyle = this.color;
       // ctx.fillRect(0, 0, width, height);
     },

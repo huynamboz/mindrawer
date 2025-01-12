@@ -7,7 +7,8 @@ import {
   type FabricObjectProps,
   type ObjectEvents,
   type SerializedObjectProps,
-  type ActiveSelection } from 'fabric';
+  type ActiveSelection,
+} from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
 export const CIRCLE_RADIUS = 4;
@@ -106,13 +107,19 @@ export function updateLinePosition(
 
       const isMoveFirstLine = firstLine.get('id') === p.get('id');
       // Tính toán vị trí các điểm
-      const { point1: pointFirstOfLineTarget, point2: pointSecondOfLineTarget } = calcLinePoints(p as Line);
+      const {
+        point1: pointFirstOfLineTarget,
+        point2: pointSecondOfLineTarget,
+      } = calcLinePoints(p as Line);
 
-      let movedX = 0, movedY = 0;
+      let movedX = 0,
+        movedY = 0;
 
       // if move first line
       if (isMoveFirstLine) {
-        const { point2: pointSecondOfSecondLine } = calcLinePoints(secondLine as Line);
+        const { point2: pointSecondOfSecondLine } = calcLinePoints(
+          secondLine as Line,
+        );
         console.log('moving first line');
         // tính toán khoảng cách di chuyển - nếu di chuyển first line thì khoảng
         // cách di chuyển bằng điểm đầu của firstpoint point trừ cho điểm đầu sau khi di chuyển của first line (vì point chưa di chuyển)
@@ -147,13 +154,19 @@ export function updateLinePosition(
         }
       }
       else {
-        const { point1: pointFirstOfFirstLine } = calcLinePoints(firstLine as Line);
+        const { point1: pointFirstOfFirstLine } = calcLinePoints(
+          firstLine as Line,
+        );
         // tính toán khoảng cách di chuyển - nếu di chuyển second line thì khoảng
         // cách di chuyển bằng điểm đầu của mid point trừ cho điểm đầu  sau khi di chuyển của second line (vì point chưa di chuyển)
         movedX = midPoint.left - (pointFirstOfLineTarget.x - CIRCLE_RADIUS);
         movedY = midPoint.top - (pointFirstOfLineTarget.y - CIRCLE_RADIUS);
 
-        console.log('moving second line', pointFirstOfFirstLine.x, firstLine.get('x1'));
+        console.log(
+          'moving second line',
+          pointFirstOfFirstLine.x,
+          firstLine.get('x1'),
+        );
         firstPoint.set({
           left: firstPoint.left - movedX,
           top: firstPoint.top - movedY,
@@ -199,8 +212,10 @@ export function updateLinePosition(
       const firstLine = fabricStore?.getObjectById(firstLineId) as Line;
       const secondLine = fabricStore?.getObjectById(secondLineId) as Line;
 
-      const { point1: firstLineStart, point2: firstLineEnd } = calcLinePoints(firstLine);
-      const { point1: secondLineStart, point2: secondLineEnd } = calcLinePoints(secondLine);
+      const { point1: firstLineStart, point2: firstLineEnd }
+        = calcLinePoints(firstLine);
+      const { point1: secondLineStart, point2: secondLineEnd }
+        = calcLinePoints(secondLine);
       const middleX = (firstLineStart.x + p.left) / 2;
       const middleY = (firstLineStart.y + p.top) / 2;
 
@@ -255,7 +270,9 @@ export function updateLinePosition(
           });
           firstLine.setCoords();
           secondLine.setCoords();
-          const middlePoint = fabricStore?.getObjectById(p.get('midPointId')) as Circle;
+          const middlePoint = fabricStore?.getObjectById(
+            p.get('midPointId'),
+          ) as Circle;
           if (middlePoint) {
             middlePoint.set({
               left: middleX - CIRCLE_RADIUS / 2,
@@ -277,7 +294,7 @@ export function updateLinePosition(
  * const { point1, point2 } = calcLinePoints(line);
  * console.log(point1, point2);
  * // { x: 100, y: 100 } { x: 200, y: 200 }
-  */
+ */
 export function calcLinePoints(obj: Line) {
   const points = obj.calcLinePoints();
   const matrix = obj.calcTransformMatrix();
@@ -301,6 +318,4 @@ export function updateLinePositionWrapper(target: FabricObject) {
   }
 }
 
-export function updateLineThreeControlPosition() {
-
-}
+export function updateLineThreeControlPosition() {}

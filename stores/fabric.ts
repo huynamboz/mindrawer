@@ -38,13 +38,15 @@ export const useFabricStore = defineStore('fabric', () => {
   // targetFindTolerance - vùng xung quanh object để có thể click trúng
   function init(canvasElement: HTMLCanvasElement) {
     canvasHTMLElement.value = canvasElement;
-    canvas.value = markRaw(new Canvas(canvasElement, {
-      uniformScaling: false,
-      renderOnAddRemove: false,
-      preserveObjectStacking: true,
-      selectionFullyContained: true,
-      targetFindTolerance: 10,
-    }));
+    canvas.value = markRaw(
+      new Canvas(canvasElement, {
+        uniformScaling: false,
+        renderOnAddRemove: false,
+        preserveObjectStacking: true,
+        selectionFullyContained: true,
+        targetFindTolerance: 10,
+      }),
+    );
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
@@ -104,7 +106,10 @@ export const useFabricStore = defineStore('fabric', () => {
       canvas.value.forEachObject((obj) => {
         obj.selectable = obj.get('prevSelectable') ?? true;
         obj.evented = obj.get('prevEvented') ?? true;
-        Object.assign(obj, { prevSelectable: obj.selectable, prevEvented: obj.evented });
+        Object.assign(obj, {
+          prevSelectable: obj.selectable,
+          prevEvented: obj.evented,
+        });
         obj.selectable = false;
         obj.evented = false;
       });
@@ -138,17 +143,19 @@ export const useFabricStore = defineStore('fabric', () => {
     return canvas.value?.getObjects().find(obj => obj.get('id') === id);
   }
 
-  async function setZoom(val: number, options?: { manual?: boolean; point?: Point; velocity?: number }) {
+  async function setZoom(
+    val: number,
+    options?: { manual?: boolean; point?: Point; velocity?: number },
+  ) {
     if (!canvas.value) return;
 
     // Limit the zoom value
     val = Math.max(0.1, Math.min(20, val));
 
     const { manual = false, point, velocity = 1 } = options ?? {};
-    const zoomPoint = point ?? new Point(
-      canvas.value.getWidth() / 2,
-      canvas.value.getHeight() / 2,
-    );
+    const zoomPoint
+      = point
+      ?? new Point(canvas.value.getWidth() / 2, canvas.value.getHeight() / 2);
 
     if (!manual) {
       // Direct zoom if "manual" mode is disabled
@@ -165,7 +172,11 @@ export const useFabricStore = defineStore('fabric', () => {
   }
 
   // Support function for smooth zoom animation
-  async function animateZoom(targetZoom: number, zoomPoint: Point, velocity = 1) {
+  async function animateZoom(
+    targetZoom: number,
+    zoomPoint: Point,
+    velocity = 1,
+  ) {
     const step = 0.01 * velocity; // Small zoom step for animation
     const intervalTime = 10; // Time interval between steps (ms)
 
@@ -175,7 +186,10 @@ export const useFabricStore = defineStore('fabric', () => {
 
       const interval = setInterval(() => {
         // Stop the interval when the target zoom value is reached
-        if ((isZoomingIn && currentZoom >= targetZoom) || (!isZoomingIn && currentZoom <= targetZoom)) {
+        if (
+          (isZoomingIn && currentZoom >= targetZoom)
+          || (!isZoomingIn && currentZoom <= targetZoom)
+        ) {
           clearInterval(interval);
           resolve();
           return;

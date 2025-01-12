@@ -30,9 +30,7 @@
         @select-alpha="selectAlpha"
       />
     </div>
-    <div
-      class="color-show border py-[1px] w-full rounded-lg overflow-hidden"
-    >
+    <div class="color-show border py-[1px] w-full rounded-lg overflow-hidden">
       <Preview
         :color="modelHex"
         :width="previewWidth"
@@ -151,11 +149,20 @@ const v = ref(0);
 
 const isLightTheme = computed(() => props.theme === 'light');
 const totalWidth = computed(() => hueHeight.value + (hueWidth.value + 12) * 2);
-const previewWidth = computed(() => totalWidth.value - (props.suckerHide ? 0 : previewHeight.value));
-const rgba = computed(() => ({ r: r.value, g: g.value, b: b.value, a: a.value }));
+const previewWidth = computed(
+  () => totalWidth.value - (props.suckerHide ? 0 : previewHeight.value),
+);
+const rgba = computed(() => ({
+  r: r.value,
+  g: g.value,
+  b: b.value,
+  a: a.value,
+}));
 const hsv = computed(() => ({ h: h.value, s: s.value, v: v.value }));
 const rgbString = computed(() => `rgb(${r.value}, ${g.value}, ${b.value})`);
-const rgbaStringShort = computed(() => `${r.value}, ${g.value}, ${b.value}, ${a.value}`);
+const rgbaStringShort = computed(
+  () => `${r.value}, ${g.value}, ${b.value}, ${a.value}`,
+);
 const rgbaString = computed(() => `rgba(${rgbaStringShort.value})`);
 const hexString = computed(() => rgb2hex(rgba.value, true));
 
@@ -175,7 +182,14 @@ watch(
 );
 
 const selectSaturation = (color: any) => {
-  const { r: rVal, g: gVal, b: bVal, h: hVal, s: sVal, v: vVal } = setColorValue(color);
+  const {
+    r: rVal,
+    g: gVal,
+    b: bVal,
+    h: hVal,
+    s: sVal,
+    v: vVal,
+  } = setColorValue(color);
   r.value = rVal;
   g.value = gVal;
   b.value = bVal;
@@ -187,7 +201,14 @@ const selectSaturation = (color: any) => {
 };
 
 const selectHue = (color: any) => {
-  const { r: rVal, g: gVal, b: bVal, h: hVal, s: sVal, v: vVal } = setColorValue(color);
+  const {
+    r: rVal,
+    g: gVal,
+    b: bVal,
+    h: hVal,
+    s: sVal,
+    v: vVal,
+  } = setColorValue(color);
   r.value = rVal;
   g.value = gVal;
   b.value = bVal;
@@ -207,7 +228,15 @@ const selectAlpha = (aValue: any) => {
 };
 
 const inputHex = (color: string) => {
-  const { r: rVal, g: gVal, b: bVal, a: aVal, h: hVal, s: sVal, v: vVal } = setColorValue(color);
+  const {
+    r: rVal,
+    g: gVal,
+    b: bVal,
+    a: aVal,
+    h: hVal,
+    s: sVal,
+    v: vVal,
+  } = setColorValue(color);
   r.value = rVal;
   g.value = gVal;
   b.value = bVal;
@@ -225,7 +254,15 @@ const inputHex = (color: string) => {
 };
 
 const inputRgba = (color: string) => {
-  const { r: rVal, g: gVal, b: bVal, a: aVal, h: hVal, s: sVal, v: vVal } = setColorValue(color);
+  const {
+    r: rVal,
+    g: gVal,
+    b: bVal,
+    a: aVal,
+    h: hVal,
+    s: sVal,
+    v: vVal,
+  } = setColorValue(color);
   r.value = rVal;
   g.value = gVal;
   b.value = bVal;
@@ -252,7 +289,15 @@ const openSucker = (isOpen: boolean) => {
 };
 
 const selectSucker = (color: string) => {
-  const { r: rVal, g: gVal, b: bVal, a: aVal, h: hVal, s: sVal, v: vVal } = setColorValue(color);
+  const {
+    r: rVal,
+    g: gVal,
+    b: bVal,
+    a: aVal,
+    h: hVal,
+    s: sVal,
+    v: vVal,
+  } = setColorValue(color);
   r.value = rVal;
   g.value = gVal;
   b.value = bVal;
@@ -269,7 +314,15 @@ const selectSucker = (color: string) => {
 };
 
 const selectColor = (color: string) => {
-  const { r: rVal, g: gVal, b: bVal, a: aVal, h: hVal, s: sVal, v: vVal } = setColorValue(color);
+  const {
+    r: rVal,
+    g: gVal,
+    b: bVal,
+    a: aVal,
+    h: hVal,
+    s: sVal,
+    v: vVal,
+  } = setColorValue(color);
   r.value = rVal;
   g.value = gVal;
   b.value = bVal;

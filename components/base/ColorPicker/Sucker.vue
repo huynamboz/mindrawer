@@ -72,10 +72,13 @@ const isOpenSucker = ref(false);
 const suckerPreview = ref<HTMLDivElement | null>(null);
 const isSucking = ref(false);
 
-watch(() => props.suckerCanvas, (newVal) => {
-  isSucking.value = false;
-  suckColor(newVal);
-});
+watch(
+  () => props.suckerCanvas,
+  (newVal) => {
+    isSucking.value = false;
+    suckColor(newVal);
+  },
+);
 
 const openSucker = () => {
   if (!isOpenSucker.value) {
@@ -111,11 +114,21 @@ const mousemoveHandler = (e: MouseEvent) => {
     left: domLeft,
     width,
     height,
-  } = props.suckerCanvas?.getBoundingClientRect() ?? { top: 0, left: 0, width: 0, height: 0 };
+  } = props.suckerCanvas?.getBoundingClientRect() ?? {
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0,
+  };
   const x = clientX - domLeft;
   const y = clientY - domTop;
   const ctx = props.suckerCanvas?.getContext('2d');
-  const imgData = ctx?.getImageData(Math.min(x, width - 1), Math.min(y, height - 1), 1, 1);
+  const imgData = ctx?.getImageData(
+    Math.min(x, width - 1),
+    Math.min(y, height - 1),
+    1,
+    1,
+  );
   const [r, g, b, alpha] = imgData?.data ?? [0, 0, 0, 0];
   const a = parseFloat((alpha / 255).toFixed(2));
   const style = suckerPreview.value?.style;
@@ -163,7 +176,12 @@ const suckColor = (dom: HTMLCanvasElement | null) => {
     const x = clientX - left;
     const y = clientY - top;
     const ctx = dom.getContext('2d');
-    const imgData = ctx?.getImageData(Math.min(x, width - 1), Math.min(y, height - 1), 1, 1);
+    const imgData = ctx?.getImageData(
+      Math.min(x, width - 1),
+      Math.min(y, height - 1),
+      1,
+      1,
+    );
     const [r, g, b, alpha] = imgData?.data ?? [0, 0, 0, 0];
     const a = parseFloat((alpha / 255).toFixed(2));
     emit('selectSucker', { r, g, b, a });

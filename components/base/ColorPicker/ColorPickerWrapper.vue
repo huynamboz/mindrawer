@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ColorPicker from './ColorPicker/ColorPicker.vue';
+import ColorPicker from './ColorPicker.vue';
 
 const fabricStore = useFabricStore();
 const color = ref<string>('#1BC7B1');
@@ -8,7 +8,9 @@ const suckerArea = ref<number[]>([]);
 const isOpenSucker = ref<boolean>(false);
 const selectedColor = ref<string>('');
 
-const changeColor = (newColor: { rgba: { r: number; g: number; b: number; a: number } }) => {
+const changeColor = (newColor: {
+  rgba: { r: number; g: number; b: number; a: number };
+}) => {
   const { r, g, b, a } = newColor.rgba;
   color.value = `rgba(${r}, ${g}, ${b}, ${a})`;
   console.log('Color changed:', color.value);

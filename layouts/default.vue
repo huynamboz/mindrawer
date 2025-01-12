@@ -13,7 +13,9 @@ import Settings from '~/components/base/Settings.vue';
       href="https://github.com/huynamboz/mindrawer"
       target="_blank"
     >
-      <span class="i-mdi-github fixed z-50 top-3 right-3 cursor-pointer text-2xl" />
+      <span
+        class="i-mdi-github fixed z-50 top-3 right-3 cursor-pointer text-2xl"
+      />
     </a>
 
     <img
@@ -22,7 +24,9 @@ import Settings from '~/components/base/Settings.vue';
       alt=""
     >
 
-    <div class="max-md:hidden fixed top-3 left-1/2 flex items-center gap-1 h-[20px] -translate-x-1/2 z-50">
+    <div
+      class="max-md:hidden fixed top-3 left-1/2 flex items-center gap-1 h-[20px] -translate-x-1/2 z-50"
+    >
       <img
         class="h-[12px]"
         src="/logo.png"

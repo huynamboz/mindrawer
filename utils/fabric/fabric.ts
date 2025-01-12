@@ -1,8 +1,22 @@
-import { type IText, Triangle, type FabricObjectProps, Rect, Circle, Line, Ellipse, Textbox } from 'fabric';
+import {
+  type IText,
+  Triangle,
+  type FabricObjectProps,
+  Rect,
+  Circle,
+  Line,
+  Ellipse,
+  Textbox,
+} from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
 // import { type ObjectEvents, type FabricObject, type Line, type Group, Circle, type Rect, type Ellipse, type Triangle, type FabricObjectProps, type SerializedObjectProps } from 'fabric';
-import { makeLine, makeCircle, CIRCLE_RADIUS, updateLinePosition } from './lineControl';
+import {
+  makeLine,
+  makeCircle,
+  CIRCLE_RADIUS,
+  updateLinePosition,
+} from './lineControl';
 import type { ToolType } from '~/types/toolbar';
 
 interface ObjectOptions {
@@ -35,7 +49,11 @@ export const defaultObjectOptions = {
   noScaleCache: false,
 };
 
-export function createFabricObject(type: ToolType, option: Partial<FabricObjectProps>, moreOptions?: Partial<ObjectOptions>) {
+export function createFabricObject(
+  type: ToolType,
+  option: Partial<FabricObjectProps>,
+  moreOptions?: Partial<ObjectOptions>,
+) {
   const fabricStore = useFabricStore();
 
   const canvas = fabricStore.canvas;
@@ -48,8 +66,18 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         const line = makeLine([x1, y1, x1, y1]);
         const lineId = line.get('id');
 
-        const firstPoint = makeCircle(line.get('x1') - CIRCLE_RADIUS, line.get('y1') - CIRCLE_RADIUS, [lineId, lineId], 'start');
-        const endPoint = makeCircle(line.get('x2') - CIRCLE_RADIUS / 2, line.get('y2') - CIRCLE_RADIUS / 2, [lineId, lineId], 'end');
+        const firstPoint = makeCircle(
+          line.get('x1') - CIRCLE_RADIUS,
+          line.get('y1') - CIRCLE_RADIUS,
+          [lineId, lineId],
+          'start',
+        );
+        const endPoint = makeCircle(
+          line.get('x2') - CIRCLE_RADIUS / 2,
+          line.get('y2') - CIRCLE_RADIUS / 2,
+          [lineId, lineId],
+          'end',
+        );
 
         canvas?.add(line, firstPoint);
         canvas?.bringObjectToFront(firstPoint);
@@ -78,7 +106,7 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
               p.set('visible', false);
             });
             canvas?.requestRenderAll();
-          };
+          }
         });
 
         endPoint.set({
@@ -91,8 +119,7 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
 
         return endPoint;
       }
-      else
-        return makeLine([100, 100, 100, 100]);
+      else return makeLine([100, 100, 100, 100]);
 
     case 'line3':
       if (moreOptions?.startPoints) {
@@ -103,9 +130,24 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         const lineId = line.get('id');
         const lineId2 = line2.get('id');
 
-        const firstPoint = makeCircle(line.get('x1') - CIRCLE_RADIUS, line.get('y1') - CIRCLE_RADIUS, [lineId, lineId2], 'start');
-        const midPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, lineId2], 'mid');
-        const endPoint = makeCircle(line.get('x2'), line.get('y2'), [lineId, lineId2], 'end');
+        const firstPoint = makeCircle(
+          line.get('x1') - CIRCLE_RADIUS,
+          line.get('y1') - CIRCLE_RADIUS,
+          [lineId, lineId2],
+          'start',
+        );
+        const midPoint = makeCircle(
+          line.get('x2'),
+          line.get('y2'),
+          [lineId, lineId2],
+          'mid',
+        );
+        const endPoint = makeCircle(
+          line.get('x2'),
+          line.get('y2'),
+          [lineId, lineId2],
+          'end',
+        );
 
         canvas?.add(line, line2, firstPoint, midPoint);
         canvas?.bringObjectToFront(firstPoint);
@@ -141,26 +183,38 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
         });
 
         const groupId = uuidv4();
-        endPoint.set({ groupId, updateLinePosition, midPointId: midPoint.get('id'), test: true, items: [line, line2, firstPoint, midPoint, endPoint] });
+        endPoint.set({
+          groupId,
+          updateLinePosition,
+          midPointId: midPoint.get('id'),
+          test: true,
+          items: [line, line2, firstPoint, midPoint, endPoint],
+        });
 
         line.set({
           groupId,
-          pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')],
+          pointIds: [
+            firstPoint.get('id'),
+            midPoint.get('id'),
+            endPoint.get('id'),
+          ],
           lineIds: [lineId, lineId2],
         });
 
         line2.set({
           groupId,
-          pointIds: [firstPoint.get('id'), midPoint.get('id'), endPoint.get('id')],
+          pointIds: [
+            firstPoint.get('id'),
+            midPoint.get('id'),
+            endPoint.get('id'),
+          ],
           lineIds: [lineId, lineId2],
         });
         return endPoint;
       }
-      else
-        return new Line([0, 0, 0, 0], options);
+      else return new Line([0, 0, 0, 0], options);
 
-    case 'triangle':
-    {
+    case 'triangle': {
       const triangle = new Triangle(options);
       triangle.on('selected', (o) => {
         o.target.perPixelTargetFind = false;
@@ -171,8 +225,7 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
       return triangle;
     }
 
-    case 'rect':
-    {
+    case 'rect': {
       const rect = new Rect(options);
       rect.on('selected', (o) => {
         o.target.perPixelTargetFind = false;
@@ -186,12 +239,14 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
     case 'circle':
       return new Circle(options);
 
-    case 'ellipse':
-    {
-      const ellipse = new Ellipse({ ...options, rx: 0,
+    case 'ellipse': {
+      const ellipse = new Ellipse({
+        ...options,
+        rx: 0,
         ry: 0,
         fill: 'transparent',
-        stroke: 'black' });
+        stroke: 'black',
+      });
       ellipse.on('selected', (o) => {
         o.target.perPixelTargetFind = false;
       });
@@ -201,8 +256,7 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
       return ellipse;
     }
 
-    case 'text':
-    {
+    case 'text': {
       const textbox = new Textbox('', {
         id: uuidv4(),
         fontSize: 40,
@@ -223,7 +277,10 @@ export function createFabricObject(type: ToolType, option: Partial<FabricObjectP
       textbox._wordJoiners = /[]/;
       function fitTextboxToContent(textV: { target: IText }) {
         const text = textV.target;
-        const textLinesMaxWidth = text.textLines.reduce((max, _, i) => Math.max(max, text.getLineWidth(i)), 0);
+        const textLinesMaxWidth = text.textLines.reduce(
+          (max, _, i) => Math.max(max, text.getLineWidth(i)),
+          0,
+        );
         text.set({ width: textLinesMaxWidth });
       }
 

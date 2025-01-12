@@ -60,7 +60,8 @@ const imgAlphaBase64 = ref<string>('');
 
 // Lấy lịch sử màu từ localStorage nếu có
 if (props.colorsHistoryKey && localStorage) {
-  colorsHistory.value = JSON.parse(localStorage.getItem(props.colorsHistoryKey) as string) || [];
+  colorsHistory.value
+    = JSON.parse(localStorage.getItem(props.colorsHistoryKey) as string) || [];
 }
 
 imgAlphaBase64.value = createAlphaSquare(4).toDataURL();
@@ -113,7 +114,7 @@ watch(color, (newColor) => {
     transition: all 0.1s;
     cursor: pointer;
     &:nth-child(8n + 1) {
-    //  margin-left: 0;
+      //  margin-left: 0;
     }
     &:hover {
       transform: scale(1.4);
