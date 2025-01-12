@@ -55,6 +55,10 @@ export function createFabricObject(
   moreOptions?: Partial<ObjectOptions>,
 ) {
   const fabricStore = useFabricStore();
+  const editorSetting = useFabricSettingStore();
+
+  defaultObjectOptions.fill = editorSetting.getObjSetting('fill');
+  defaultObjectOptions.stroke = editorSetting.getObjSetting('stroke');
 
   const canvas = fabricStore.canvas;
   const options = { ...defaultObjectOptions, ...option };

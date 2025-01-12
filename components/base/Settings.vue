@@ -1,76 +1,46 @@
 <script setup lang="ts">
-import { vOnClickOutside } from '@vueuse/components';
-import ColorPickerWrapper from './ColorPicker/ColorPickerWrapper.vue';
+import SettingColor from './SettingColor.vue';
 import { Slider } from '@/components/ui/slider';
 
-const editorSettings = useEditorStore();
-
-const settings = editorSettings.settings;
-const color = ref('#1BC7B1');
-const isShowBackgroundPicker = ref(false);
-
-onMounted(() => {
-  const savedBgs = localStorage.getItem('vue-colorpicker-history');
-  if (savedBgs) {
-    editorSettings.setSetting('recentFillColors', JSON.parse(savedBgs));
-  }
-});
+const fabricSettingStore = useFabricSettingStore();
+const objSettings = fabricSettingStore.objectSettings;
+const editorSettings = fabricSettingStore.editorSettings;
 </script>
 
 <template>
-  <div class="fixed max-h-[80vh] h-full top-1/2 -translate-y-1/2 right-3 z-50">
+  <div class="fixed max-h-[80vh] h-fit top-20 right-3 z-50">
     <div
-      class="relative font-light text-gray-600 text-xs p-3 h-full rounded-xl w-[220px] border bg-white shadow-lg"
+      class="relative font-light text-gray-600 text-xs p-3 h-fit rounded-xl w-[220px] border bg-white shadow-lg"
     >
       <div>
-        <p class="">
-          Background
-        </p>
-        <div class="flex gap-2 mt-2">
-          <div
-            v-for="colorItem in settings.recentFillColors"
-            :key="colorItem"
-            class="w-6 h-6 p-[2px] border rounded-md cursor-pointer hover:scale-110 transition-all duration-150"
-          >
-            <div
-              class="w-full h-full rounded-[4px]"
-              :style="{ background: colorItem }"
-            />
-          </div>
-          <img
-            class="w-6 h-6 rounded-md cursor-pointer"
-            src="/color-wheel.png"
-            alt=""
-            @click="isShowBackgroundPicker = !isShowBackgroundPicker"
-          >
-        </div>
-        <div
-          v-if="isShowBackgroundPicker"
-          v-on-click-outside="() => (isShowBackgroundPicker = false)"
-          class="absolute right-[calc(100%+10px)] !shadow-lg border !rounded-xl overflow-hidden !bg-white"
-        >
-          <div class="px-4 pt-3">
-            Background
-          </div>
-          <ColorPickerWrapper
-            :color="color"
-            class="!bg-white !pt-0 mt-2"
-          />
-        </div>
+        <SettingColor
+          label="Fill"
+          setting-key="fill"
+          history-key="recentFillColors"
+          :history-colors="editorSettings.recentFillColors"
+        />
       </div>
 
+      <div class="mt-4">
+        <SettingColor
+          label="Stroke"
+          setting-key="stroke"
+          history-key="recentStrokeColors"
+          :history-colors="editorSettings.recentStrokeColors"
+        />
+      </div>
       <!-- opacity -->
       <p class="mt-4 mb-2">
         Opacity:
-        <span class="text-xs text-gray-400">{{ settings.opacity }}%</span>
+        <span class="text-xs text-gray-400">{{ (objSettings.opacity * 100).toFixed(0) }}%</span>
       </p>
       <Slider
-        :model-value="[settings.opacity]"
+        :model-value="[objSettings.opacity]"
         :min="0"
-        :max="100"
-        :step="1"
+        :max="1"
+        :step="0.01"
         @update:model-value="
-          $event && editorSettings.setSetting('opacity', $event[0])
+          $event && fabricSettingStore.setObjSetting('opacity', $event[0])
         "
       />
     </div>

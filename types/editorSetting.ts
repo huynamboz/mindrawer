@@ -1,3 +1,10 @@
+export interface ObjectSetting {
+  fill: string;
+  stroke: string;
+  strokeWidth: number;
+  strokeDashArray: number[];
+  opacity: number;
+}
 export interface EditorSetting {
   theme: string;
   grid: boolean;
@@ -7,11 +14,6 @@ export interface EditorSetting {
   gridSizeUnitOptions: string[];
 
   // Object setting
-  fill: string;
   recentFillColors: string[];
-  stroke: string;
   recentStrokeColors: string[];
-  strokeWidth: number;
-  strokeDashArray: number[];
-  opacity: number;
 }

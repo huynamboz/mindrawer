@@ -35,6 +35,7 @@
         :color="modelHex"
         :width="previewWidth"
         :height="previewHeight"
+        @input-color="inputHex"
       />
       <Sucker
         v-if="!suckerHide"
@@ -49,11 +50,11 @@
       :color="modelHex"
       @input-color="inputHex"
     /> -->
-    <Box
+    <!-- <Box
       name="RGBA"
       :color="modelRgba"
       @input-color="inputRgba"
-    />
+    /> -->
     <Colors
       :color="rgbaString"
       :colors-default="colorsDefault"
@@ -73,7 +74,7 @@ import Hue from './Hue.vue';
 import Alpha from './Alpha.vue';
 import Preview from './Preview.vue';
 import Sucker from './Sucker.vue';
-import Box from './Box.vue';
+// import Box from './Box.vue';
 import Colors from './Colors.vue';
 
 const saturation = ref<InstanceType<typeof Saturation> | null>(null);
@@ -228,6 +229,7 @@ const selectAlpha = (aValue: any) => {
 };
 
 const inputHex = (color: string) => {
+  console.log('inputHex', color);
   const {
     r: rVal,
     g: gVal,
@@ -253,31 +255,31 @@ const inputHex = (color: string) => {
   });
 };
 
-const inputRgba = (color: string) => {
-  const {
-    r: rVal,
-    g: gVal,
-    b: bVal,
-    a: aVal,
-    h: hVal,
-    s: sVal,
-    v: vVal,
-  } = setColorValue(color);
-  r.value = rVal;
-  g.value = gVal;
-  b.value = bVal;
-  a.value = aVal;
-  h.value = hVal;
-  s.value = sVal;
-  v.value = vVal;
-  modelHex.value = hexString.value;
-  modelRgba.value = color;
-  nextTick(() => {
-    saturation.value?.renderColor();
-    saturation.value?.renderSlide();
-    hue.value?.renderSlide();
-  });
-};
+// const inputRgba = (color: string) => {
+//   const {
+//     r: rVal,
+//     g: gVal,
+//     b: bVal,
+//     a: aVal,
+//     h: hVal,
+//     s: sVal,
+//     v: vVal,
+//   } = setColorValue(color);
+//   r.value = rVal;
+//   g.value = gVal;
+//   b.value = bVal;
+//   a.value = aVal;
+//   h.value = hVal;
+//   s.value = sVal;
+//   v.value = vVal;
+//   modelHex.value = hexString.value;
+//   modelRgba.value = color;
+//   nextTick(() => {
+//     saturation.value?.renderColor();
+//     saturation.value?.renderSlide();
+//     hue.value?.renderSlide();
+//   });
+// };
 
 const setText = () => {
   modelHex.value = hexString.value;

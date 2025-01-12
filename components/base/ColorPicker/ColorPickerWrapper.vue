@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import ColorPicker from './ColorPicker.vue';
+import { convertRGBAStringToHex } from './composable';
 
 const fabricStore = useFabricStore();
-const color = ref<string>('#1BC7B1');
+const color = defineModel<string>({ required: true, default: '#ffffff' });
 const suckerCanvas = ref<HTMLCanvasElement | null>(null);
 const suckerArea = ref<number[]>([]);
 const isOpenSucker = ref<boolean>(false);
@@ -12,7 +13,8 @@ const changeColor = (newColor: {
   rgba: { r: number; g: number; b: number; a: number };
 }) => {
   const { r, g, b, a } = newColor.rgba;
-  color.value = `rgba(${r}, ${g}, ${b}, ${a})`;
+  // color.value = `rgba(${r}, ${g}, ${b}, ${a})`;
+  color.value = convertRGBAStringToHex(`rgba(${r}, ${g}, ${b}, ${a})`);
   console.log('Color changed:', color.value);
   suckerCanvas.value?.remove();
 };

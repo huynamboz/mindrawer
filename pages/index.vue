@@ -109,9 +109,7 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
           {
             left: startX.value,
             top: startY.value,
-            stroke: 'black',
             strokeWidth: 1,
-            fill: 'transparent',
           },
           {
             startPoints: [startX.value, startY.value],

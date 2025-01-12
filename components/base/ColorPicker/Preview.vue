@@ -6,60 +6,30 @@
       :style="{ backgroundColor: color }"
     />
     <input
+      v-model="modelColor"
       type="text"
-      :value="color"
       class="h-[30px] w-full bg-transparent outline-none"
     >
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-// import { createAlphaSquare } from './composible';
+<script setup lang="ts">
+const props = defineProps<{
+  color: string;
+  width: number;
+  height: number;
+}>();
 
-export default defineComponent({
-  props: {
-    color: {
-      type: String,
-      default: '#000000',
-    },
-    width: {
-      type: Number,
-      default: 100,
-    },
-    height: {
-      type: Number,
-      default: 30,
-    },
+const emit = defineEmits<{
+  (e: 'inputColor', value: string): void;
+}>();
+
+const modelColor = computed({
+  get() {
+    return props.color || '';
   },
-  data() {
-    return {
-      alphaSize: 5,
-    };
-  },
-  watch: {
-    color() {
-      this.renderColor();
-    },
-  },
-  mounted() {
-    this.renderColor();
-  },
-  methods: {
-    renderColor() {
-      // const canvas = this.$el;
-      // const width = this.width;
-      // const height = this.height;
-      // const size = this.alphaSize;
-      // const canvasSquare = createAlphaSquare(size);
-      // const ctx = canvas.getContext('2d');
-      // canvas.width = width;
-      // canvas.height = height;
-      // ctx.fillStyle = ctx.createPattern(canvasSquare, 'repeat');
-      // ctx.fillRect(0, 0, width, height);
-      // ctx.fillStyle = this.color;
-      // ctx.fillRect(0, 0, width, height);
-    },
+  set(val) {
+    emit('inputColor', val);
   },
 });
 </script>

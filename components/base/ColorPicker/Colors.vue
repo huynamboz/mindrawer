@@ -68,8 +68,14 @@ imgAlphaBase64.value = createAlphaSquare(4).toDataURL();
 
 // Cập nhật lịch sử màu sắc khi component bị unmount
 onBeforeUnmount(() => {
-  console.log('unmount', convertRGBAStringToHex(props.color));
-  setColorsHistory(convertRGBAStringToHex(props.color));
+  const colorConvert = convertRGBAStringToHex(props.color);
+  // check is transparent color
+  if (props.color === 'rgba(0, 0, 0, 0)') {
+    setColorsHistory('transparent');
+  }
+  else {
+    setColorsHistory(colorConvert);
+  }
 });
 
 // Cập nhật danh sách màu sắc trong lịch sử
