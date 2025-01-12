@@ -10,6 +10,7 @@ export const useFabricStore = defineStore('fabric', () => {
   const savedActiveTool = ref<ToolType>('select');
   const mousePosition = ref({ x: 0, y: 0 });
   const zoom = ref(1);
+  const canvasHTMLElement = ref<HTMLCanvasElement>();
 
   function resizeCanvas() {
     if (!canvas.value) {
@@ -36,6 +37,7 @@ export const useFabricStore = defineStore('fabric', () => {
   // preserveObjectStacking - Không thay đổi z-index của object khi click
   // targetFindTolerance - vùng xung quanh object để có thể click trúng
   function init(canvasElement: HTMLCanvasElement) {
+    canvasHTMLElement.value = canvasElement;
     canvas.value = markRaw(new Canvas(canvasElement, {
       uniformScaling: false,
       renderOnAddRemove: false,
@@ -195,6 +197,7 @@ export const useFabricStore = defineStore('fabric', () => {
     savedActiveTool,
     mousePosition,
     zoom,
+    canvasHTMLElement,
     saveActiveTool,
     restoreActiveTool,
     enableTempMoveMode,
