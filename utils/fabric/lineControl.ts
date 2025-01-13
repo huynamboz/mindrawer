@@ -30,17 +30,18 @@ export function makeCircle(
   });
   c.hasControls = c.hasBorders = false;
 
-  Object.assign(c, { lines, pos });
+  Object.assign(c, { lineIds: lines, pos });
 
   return c;
 }
 
 export function makeLine(coords: [number, number, number, number]) {
+  const fabricSetting = useFabricSettingStore();
   const line = new Line(coords, {
     id: uuidv4(),
-    fill: 'transparent',
-    stroke: 'black',
-    strokeWidth: 1,
+    fill: fabricSetting.objectSettings.fill,
+    stroke: fabricSetting.objectSettings.stroke,
+    strokeWidth: fabricSetting.objectSettings.strokeWidth,
     selectable: true,
     evented: true,
     noScaleCache: false,
@@ -206,9 +207,9 @@ export function updateLinePosition(
 
   // Trường hợp circle
   else if (p.type === 'circle') {
-    if ('pos' in p && 'lines' in p) {
-      const firstLineId = (p as any).lines[0] as string;
-      const secondLineId = (p as any).lines[1] as string;
+    if ('pos' in p && 'lineIds' in p) {
+      const firstLineId = (p as any).lineIds[0] as string;
+      const secondLineId = (p as any).lineIds[1] as string;
       const firstLine = fabricStore?.getObjectById(firstLineId) as Line;
       const secondLine = fabricStore?.getObjectById(secondLineId) as Line;
 

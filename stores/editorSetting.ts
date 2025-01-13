@@ -1,7 +1,12 @@
 import type { EditorSetting, ObjectSetting } from '~/types/editorSetting';
+import { updateLinePosition } from '~/utils/fabric/lineControl';
 
 const MAX_RECENT_COLOR = 5;
 const defaultRecentColors = ['#f37655', '#3a95c9', '#ee2624', '#2cb656', '#2c83c6'];
+
+export interface SettingMoreOptions {
+  temp: boolean;
+}
 export const useFabricSettingStore = defineStore('fabric-settings', () => {
   const objectSettings = ref<ObjectSetting>({
     fill: 'transparent',
@@ -25,12 +30,20 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
 
   // load from local storage
   console.log('load from local storage', objectSettings.value);
-  const localSettings = localStorage.getItem('editor-settings');
-  if (localSettings) {
-    const { objSetting, editorSetting } = JSON.parse(localSettings);
-    objectSettings.value = objSetting;
-    editorSettings.value = editorSetting;
+  function loadSettingFromLocalStorage() {
+    const localSettings = localStorage.getItem('editor-settings');
+    if (localSettings) {
+      const { objSetting, editorSetting } = JSON.parse(localSettings);
+      objectSettings.value = objSetting;
+      editorSettings.value = editorSetting;
+    }
   }
+
+  onBeforeMount(() => {
+    loadSettingFromLocalStorage();
+    updateRecentColorFromLocal('recentFillColors');
+    updateRecentColorFromLocal('recentStrokeColors');
+  });
 
   async function updateRecentColorFromLocal(historyKey: 'recentFillColors' | 'recentStrokeColors') {
     await nextTick();
@@ -60,17 +73,27 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
   function setEditorSetting<K extends keyof EditorSetting>(
     key: K,
     value: EditorSetting[K],
+    option: SettingMoreOptions = { temp: false },
   ) {
     editorSettings.value[key] = value;
+
+    if (option.temp) return;
     saveSettingToLocalStorage();
   }
 
   function setObjSetting<K extends keyof ObjectSetting>(
     key: K,
     value: ObjectSetting[K],
+    option: SettingMoreOptions = { temp: false },
   ) {
     objectSettings.value[key] = value;
-    saveSettingToLocalStorage();
+
+    if (!option.temp) {
+      saveSettingToLocalStorage();
+    }
+    else {
+      return;
+    }
 
     const fabricStore = useFabricStore();
     const canvas = fabricStore.canvas;
@@ -79,8 +102,24 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     // save to local storage
     const objectActive = canvas.getActiveObject();
 
+    console.log('set', objectActive);
     if (objectActive) {
-      objectActive?.set(key, value);
+      // objectActive?.set(key, value);
+      const lineIds = objectActive.get('lineIds') as string[];
+      if (lineIds) {
+        lineIds.forEach((id) => {
+          const line = fabricStore.getObjectById(id);
+          if (line) {
+            line.set(key, value);
+            updateLinePosition(line);
+            line.setCoords();
+          }
+        });
+      }
+      else {
+        objectActive.set(key, value);
+      }
+      objectActive.setCoords();
       canvas.requestRenderAll();
     }
   }
@@ -101,5 +140,6 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     setObjSetting,
     getObjSetting,
     updateRecentColorFromLocal,
+    loadSettingFromLocalStorage,
   };
 });

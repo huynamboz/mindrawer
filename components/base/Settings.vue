@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SettingColor from './SettingColor.vue';
+import SettingStrokeWidth from './SettingStrokeWidth.vue';
 import { Slider } from '@/components/ui/slider';
 
 const fabricSettingStore = useFabricSettingStore();
@@ -28,6 +29,11 @@ const editorSettings = fabricSettingStore.editorSettings;
           history-key="recentStrokeColors"
           :history-colors="editorSettings.recentStrokeColors"
         />
+      </div>
+
+      <!-- stroke width -->
+      <div class="mt-4">
+        <SettingStrokeWidth />
       </div>
       <!-- opacity -->
       <p class="mt-4 mb-2">

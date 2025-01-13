@@ -109,7 +109,6 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
           {
             left: startX.value,
             top: startY.value,
-            strokeWidth: 1,
           },
           {
             startPoints: [startX.value, startY.value],
@@ -132,7 +131,12 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
 
 function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
   const evt = opt.e;
+  if (!canvas.value) {
+    return;
+  }
 
+  const pointer = canvas.value.getPointer(evt);
+  fabricStore.setMousePosition(pointer.x, pointer.y);
   if (isMouseDown.value) {
     isDragging.value = true;
   }
@@ -156,7 +160,6 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
     canvas.value.requestRenderAll();
   }
   else {
-    const pointer = canvas.value.getPointer(evt);
     const width = pointer.x - startX.value;
     const height = pointer.y - startY.value;
     const rx = Math.abs(pointer.x - startX.value) / 2; // Half width

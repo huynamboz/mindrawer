@@ -34,6 +34,7 @@ export const defaultObjectControl = {
 export const defaultObjectOptions = {
   fill: 'transparent',
   stroke: 'black',
+  strokeWidth: 1,
   width: 0,
   height: 0,
   left: 0,
@@ -55,10 +56,11 @@ export function createFabricObject(
   moreOptions?: Partial<ObjectOptions>,
 ) {
   const fabricStore = useFabricStore();
-  const editorSetting = useFabricSettingStore();
+  const fabricSetting = useFabricSettingStore();
 
-  defaultObjectOptions.fill = editorSetting.getObjSetting('fill');
-  defaultObjectOptions.stroke = editorSetting.getObjSetting('stroke');
+  defaultObjectOptions.fill = fabricSetting.getObjSetting('fill');
+  defaultObjectOptions.stroke = fabricSetting.getObjSetting('stroke');
+  defaultObjectOptions.strokeWidth = fabricSetting.getObjSetting('strokeWidth');
 
   const canvas = fabricStore.canvas;
   const options = { ...defaultObjectOptions, ...option };
@@ -89,6 +91,9 @@ export function createFabricObject(
 
         // if selected then show all points, if deselected then hide all points
         line.on('mousedown', () => {
+          fabricSetting.setObjSetting('strokeWidth', line.strokeWidth, { temp: true });
+          fabricSetting.setObjSetting('stroke', line.stroke as string, { temp: true });
+          fabricSetting.setObjSetting('fill', line.fill as string, { temp: true });
           [firstPoint, endPoint].forEach((p) => {
             p.set('visible', true);
           });
@@ -221,10 +226,14 @@ export function createFabricObject(
     case 'triangle': {
       const triangle = new Triangle(options);
       triangle.on('selected', (o) => {
+        fabricSetting.setObjSetting('strokeWidth', triangle.strokeWidth, { temp: true });
+        fabricSetting.setObjSetting('stroke', triangle.stroke as string, { temp: true });
+        fabricSetting.setObjSetting('fill', triangle.fill as string, { temp: true });
         o.target.perPixelTargetFind = false;
       });
       triangle.on('deselected', (o) => {
         o.target.perPixelTargetFind = true;
+        fabricSetting.loadSettingFromLocalStorage();
       });
       return triangle;
     }
@@ -232,10 +241,14 @@ export function createFabricObject(
     case 'rect': {
       const rect = new Rect(options);
       rect.on('selected', (o) => {
+        fabricSetting.setObjSetting('strokeWidth', rect.strokeWidth, { temp: true });
+        fabricSetting.setObjSetting('stroke', rect.stroke as string, { temp: true });
+        fabricSetting.setObjSetting('fill', rect.fill as string, { temp: true });
         o.target.perPixelTargetFind = false;
       });
       rect.on('deselected', (o) => {
         o.target.perPixelTargetFind = true;
+        fabricSetting.loadSettingFromLocalStorage();
       });
       return rect;
     }

@@ -50,9 +50,9 @@ export const useFabricStore = defineStore('fabric', () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    document.addEventListener('mousemove', (e) => {
-      mousePosition.value = { x: e.clientX, y: e.clientY };
-    });
+    // document.addEventListener('mousemove', (e) => {
+    //   mousePosition.value = { x: e.clientX, y: e.clientY };
+    // });
 
     canvas?.value.on('object:moving', function (e) {
       updateLinePositionWrapper(e.target);
@@ -89,6 +89,10 @@ export const useFabricStore = defineStore('fabric', () => {
         group.set(defaultObjectControl);
       }
     });
+  }
+
+  function setMousePosition(x: number, y: number) {
+    mousePosition.value = { x, y };
   }
 
   function setActiveTool(action: ToolType) {
@@ -217,5 +221,6 @@ export const useFabricStore = defineStore('fabric', () => {
     enableTempMoveMode,
     getObjectById,
     setZoom,
+    setMousePosition,
   };
 });

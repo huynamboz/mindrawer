@@ -22,10 +22,6 @@ function closeBackgroundPicker() {
   fabricSettingStore.updateRecentColorFromLocal(props.historyKey);
 }
 
-onBeforeMount(() => {
-  fabricSettingStore.updateRecentColorFromLocal(props.historyKey);
-});
-
 watch(color, () => {
   fabricSettingStore.setObjSetting(props.settingKey, color.value);
 });
@@ -172,7 +168,7 @@ const imgAlphaBase64 = createAlphaSquare(4).toDataURL();
             <span
               v-if="currentColor === colorItem"
               :class="{ 'text-white': colorItem.toLowerCase() !== 'transparent' }"
-              class="i-lineicons-check text-gray-600"
+              class="i-lineicons-check text-red-600"
             />
           </div>
         </div>
