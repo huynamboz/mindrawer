@@ -30,7 +30,7 @@
         @select-alpha="selectAlpha"
       />
     </div>
-    <div class="color-show border py-[1px] w-full rounded-lg overflow-hidden">
+    <div class="color-show border py-[1px] w-full items-center pr-3 rounded-lg overflow-hidden">
       <Preview
         :color="modelHex"
         :width="previewWidth"

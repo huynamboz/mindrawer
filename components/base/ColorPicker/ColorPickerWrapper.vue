@@ -86,7 +86,6 @@ const openSucker = (isOpen: boolean) => {
     theme="light"
     :hide-alpha="true"
     :color="color"
-    :sucker-hide="false"
     :sucker-canvas="suckerCanvas"
     :sucker-area="suckerArea"
     v-bind="$attrs"

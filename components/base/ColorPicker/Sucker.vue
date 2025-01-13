@@ -1,18 +1,32 @@
 <template>
-  <div>
+  <div class="w-6 h-6 flex items-center justify-center">
     <svg
       v-if="!isSucking"
       :class="{ active: isOpenSucker }"
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      @click="openSucker(!isOpenSucker)"
+    ><path
+      fill="none"
+      :stroke="isOpenSucker ? '#1593ff' : '#9099a4'"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="1.5"
+      d="M13.879 7.697L16 9.817a1 1 0 0 1 0 1.415L8.363 18.87a1.001 1.001 0 0 1-.326.218L5.54 20.114c-1.233.508-2.466-.725-1.958-1.958L4.61 15.66a.999.999 0 0 1 .218-.327l7.636-7.636a1 1 0 0 1 1.415 0Zm0-4.243L16 5.575m4.243 4.243L18.12 7.697M16 5.575l1.413-1.414a1 1 0 0 1 1.414 0l.708.707a1 1 0 0 1 0 1.414L18.12 7.697M16 5.575l2.12 2.122"
+    /></svg>
+    <!-- <svg
+
       class="sucker"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="-12 -12 48 48"
-      @click="openSucker"
     >
       <path
         d="M13.1,8.2l5.6,5.6c0.4,0.4,0.5,1.1,0.1,1.5s-1.1,0.5-1.5,0.1c0,0-0.1,0-0.1-0.1l-1.4-1.4l-7.7,7.7C7.9,21.9,7.6,22,7.3,22H3.1C2.5,22,2,21.5,2,20.9l0,0v-4.2c0-0.3,0.1-0.6,0.3-0.8l5.8-5.8C8.5,9.7,9.2,9.6,9.7,10s0.5,1.1,0.1,1.5c0,0,0,0.1-0.1,0.1l-5.5,5.5v2.7h2.7l7.4-7.4L8.7,6.8c-0.5-0.4-0.5-1-0.1-1.5s1.1-0.5,1.5-0.1c0,0,0.1,0,0.1,0.1l1.4,1.4l3.5-3.5c1.6-1.6,4.1-1.6,5.8-0.1c1.6,1.6,1.6,4.1,0.1,5.8L20.9,9l-3.6,3.6c-0.4,0.4-1.1,0.5-1.5,0.1"
       />
-    </svg>
-    <svg
+    </svg> -->
+    <!-- <svg
       v-if="isSucking"
       class="sucker"
       viewBox="-16 -16 68 68"
@@ -45,7 +59,7 @@
           </path>
         </g>
       </g>
-    </svg>
+    </svg> -->
   </div>
 </template>
 
@@ -60,6 +74,10 @@ const props = defineProps({
   suckerArea: {
     type: Array as () => number[],
     default: () => [],
+  },
+  suckerStatus: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -80,8 +98,15 @@ watch(
   },
 );
 
-const openSucker = () => {
-  if (!isOpenSucker.value) {
+watch(
+  () => props.suckerStatus,
+  (newVal) => {
+    openSucker(newVal);
+  },
+);
+
+const openSucker = (val: boolean) => {
+  if (val) {
     isOpenSucker.value = true;
     isSucking.value = true;
     emit('openSucker', true);

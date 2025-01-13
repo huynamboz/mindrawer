@@ -10,7 +10,7 @@ const editorSettings = fabricSettingStore.editorSettings;
 <template>
   <div class="fixed max-h-[80vh] h-fit top-20 right-3 z-50">
     <div
-      class="relative font-light text-gray-600 text-xs p-3 h-fit rounded-xl w-[220px] border bg-white shadow-lg"
+      class="relative font-light text-gray-600 text-xs p-3 h-fit rounded-xl w-[240px] border bg-white shadow-lg"
     >
       <div>
         <SettingColor
