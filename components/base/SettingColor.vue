@@ -9,7 +9,8 @@ const isShowBackgroundPicker = ref(false);
 
 const props = defineProps<{
   label: string;
-  settingKey: 'fill' | 'stroke';
+  isFontColor?: boolean;
+  settingKey: 'fill' | 'stroke' ;
   historyKey: 'recentFillColors' | 'recentStrokeColors';
   historyColors?: string[];
 }>();
@@ -18,12 +19,24 @@ const color = ref(fabricSettingStore.getObjSetting(props.settingKey));
 
 function closeBackgroundPicker() {
   isShowBackgroundPicker.value = false;
-  fabricSettingStore.setObjSetting(props.settingKey, color.value);
+  if (props.isFontColor) {
+    fabricSettingStore.setObjSetting('fill', color.value);
+    fabricSettingStore.setObjSetting('stroke', color.value);
+  }
+  else {
+    fabricSettingStore.setObjSetting(props.settingKey, color.value);
+  }
   fabricSettingStore.updateRecentColorFromLocal(props.historyKey);
 }
 
 watch(color, () => {
-  fabricSettingStore.setObjSetting(props.settingKey, color.value);
+  if (props.isFontColor) {
+    fabricSettingStore.setObjSetting('fill', color.value);
+    fabricSettingStore.setObjSetting('stroke', color.value);
+  }
+  else {
+    fabricSettingStore.setObjSetting(props.settingKey, color.value);
+  }
 });
 
 const fabricStore = useFabricStore();

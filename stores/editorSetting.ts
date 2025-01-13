@@ -14,6 +14,8 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     strokeWidth: 1,
     strokeDashArray: [],
     opacity: 1,
+    fontFamily: 'Poppins',
+    fontSize: 40,
   });
 
   const editorSettings = ref<EditorSetting>({
@@ -34,8 +36,8 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     const localSettings = localStorage.getItem('editor-settings');
     if (localSettings) {
       const { objSetting, editorSetting } = JSON.parse(localSettings);
-      objectSettings.value = objSetting;
-      editorSettings.value = editorSetting;
+      objectSettings.value = { ...objectSettings.value, ...objSetting };
+      editorSettings.value = { ...editorSettings.value, ...editorSetting };
     }
   }
 

@@ -15,6 +15,7 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/png', href: '/favicon-2.png' }],
     },
   },
+  css: ['~/assets/css/global.css'],
   routeRules: {
     '/': {
       ssr: false,

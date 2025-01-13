@@ -4,6 +4,8 @@ export interface ObjectSetting {
   strokeWidth: number;
   strokeDashArray: number[];
   opacity: number;
+  fontFamily: string;
+  fontSize: number;
 }
 export interface EditorSetting {
   theme: string;

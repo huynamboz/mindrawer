@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-character-class */
 import {
   type IText,
   Triangle,
@@ -265,10 +266,14 @@ export function createFabricObject(
         stroke: 'black',
       });
       ellipse.on('selected', (o) => {
+        fabricSetting.setObjSetting('strokeWidth', ellipse.strokeWidth, { temp: true });
+        fabricSetting.setObjSetting('stroke', ellipse.stroke as string, { temp: true });
+        fabricSetting.setObjSetting('fill', ellipse.fill as string, { temp: true });
         o.target.perPixelTargetFind = false;
       });
       ellipse.on('deselected', (o) => {
         o.target.perPixelTargetFind = true;
+        fabricSetting.loadSettingFromLocalStorage();
       });
       return ellipse;
     }
@@ -280,25 +285,42 @@ export function createFabricObject(
         top: option.top,
         left: option.left,
         editingBorderColor: 'transparent',
+        objectCaching: false,
+        charSpacing: 1, // fix cursor wrong position when apply custom font
+        stroke: fabricSetting.getObjSetting('stroke'),
+        fill: fabricSetting.getObjSetting('stroke'),
+        fontFamily: fabricSetting.getObjSetting('fontFamily'),
+        ...defaultObjectControl,
       });
 
-      textbox.set(defaultObjectControl);
+      textbox.on('selected', (e) => {
+        fabricSetting.setObjSetting('fontFamily', textbox.fontFamily as string, { temp: true });
+        fabricSetting.setObjSetting('fontSize', textbox.fontSize, { temp: true });
+        fitTextboxToContent({ target: e.target });
+      });
+
       textbox.on('deselected', () => {
+        fabricSetting.loadSettingFromLocalStorage();
         if (!textbox.text?.trim()) {
           canvas?.remove(textbox);
           canvas?.renderAll();
         }
       });
 
-      // eslint-disable-next-line no-empty-character-class
+      textbox.on('resizing', () => {
+        textbox._wordJoiners = /[\s]/;
+      });
+
       textbox._wordJoiners = /[]/;
-      function fitTextboxToContent(textV: { target: IText }) {
-        const text = textV.target;
+      function fitTextboxToContent(textV: { target: any }) {
+        const text = textV.target as IText;
         const textLinesMaxWidth = text.textLines.reduce(
           (max, _, i) => Math.max(max, text.getLineWidth(i)),
           0,
         );
-        text.set({ width: textLinesMaxWidth });
+        text.set({ width: textLinesMaxWidth + 2 });
+        text.setCoords();
+        canvas?.requestRenderAll();
       }
 
       canvas?.on('text:changed', fitTextboxToContent);

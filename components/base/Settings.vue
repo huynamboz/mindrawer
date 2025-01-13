@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SettingColor from './SettingColor.vue';
 import SettingStrokeWidth from './SettingStrokeWidth.vue';
+import SettingFont from './SettingFont.vue';
 import { Slider } from '@/components/ui/slider';
 
 const fabricSettingStore = useFabricSettingStore();
@@ -31,6 +32,19 @@ const editorSettings = fabricSettingStore.editorSettings;
         />
       </div>
 
+      <div class="mt-4">
+        <SettingColor
+          label="Font color"
+          :is-font-color="true"
+          setting-key="stroke"
+          history-key="recentFillColors"
+          :history-colors="editorSettings.recentStrokeColors"
+        />
+      </div>
+
+      <div class="mt-4">
+        <SettingFont />
+      </div>
       <!-- stroke width -->
       <div class="mt-4">
         <SettingStrokeWidth />
