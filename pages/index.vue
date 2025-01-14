@@ -266,11 +266,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full">
-    <canvas
-      id="canvas"
-      ref="canvasElement"
-      class="w-full h-full"
-    />
-  </div>
+  <ClientOnly fallback-tag="div">
+    <div class="w-full h-full">
+      <canvas
+        id="canvas"
+        ref="canvasElement"
+        class="w-full h-full"
+      />
+    </div>
+    <template #fallback>
+      <!-- this will be rendered on server side -->
+      <div class="fixed top-0 left-0 z-[90] w-full h-full flex items-center justify-center bg-blue-900">
+        <img
+          src="/logo.png"
+          alt="loading"
+        >
+      </div>
+    </template>
+  </ClientOnly>
 </template>

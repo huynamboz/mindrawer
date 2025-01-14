@@ -5,6 +5,7 @@ console.log(a.value);
 
 <template>
   <div>
+    <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

@@ -5,8 +5,8 @@ import SettingFont from './SettingFont.vue';
 import { Slider } from '@/components/ui/slider';
 
 const fabricSettingStore = useFabricSettingStore();
-const objSettings = fabricSettingStore.objectSettings;
-const editorSettings = fabricSettingStore.editorSettings;
+const objSettings = computed(() => fabricSettingStore.objectSettings);
+const editorSettings = computed(() => fabricSettingStore.editorSettings);
 </script>
 
 <template>
