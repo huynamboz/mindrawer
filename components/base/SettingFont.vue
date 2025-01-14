@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+} from '@/components/ui/select';
 
 const fonts = [
   'Poppins',
@@ -41,19 +48,30 @@ const isShowFontPicker = ref(false);
       class="absolute top-0 w-full h-fit z-50 right-[calc(100%+20px)] bg-white border border-gray-200 rounded-lg shadow-lg"
       @click="isShowFontPicker = false"
     >
+      <div
+        class="border-b px-3 flex items-center"
+        @click.stop
+      >
+        <span class="i-lineicons-search-alt" />
+        <input
+          type="text"
+          class="w-full h-8 px-2 rounded-md outline-none"
+          placeholder="Search font"
+        >
+      </div>
       <ul class="p-2">
         <li
           v-for="font in fonts"
           :key="font"
           :style="{ fontFamily: font }"
-          class="flex items-center gap-2 h-[30px] font-semibold cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+          class="flex items-center gap-2 h-[30px] font-medium cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
           @click="currentFont = font"
           @mouseover="fabricSettingStore.setObjSetting('fontFamily', font, { temp: true })"
         >
           {{ font }}
           <span
             v-if="currentFont === font"
-            class="i-lineicons-check text-lg"
+            class="i-lineicons-check text-base"
           />
         </li>
       </ul>
@@ -74,7 +92,8 @@ const isShowFontPicker = ref(false);
       </div>
       <input
         v-model="currentFont"
-        class="w-full h-6 rounded-md px-2 outline-none"
+        :style="{ fontFamily: currentFont }"
+        class="w-full h-6 rounded-md px-2 outline-none font-medium"
         type="text"
         disabled
       >
@@ -85,15 +104,39 @@ const isShowFontPicker = ref(false);
     Size
   </p>
 
-  <div class="flex gap-2 mt-2">
-    <div
-      v-for="size in fontSizes"
-      :key="size.label"
-      :class="{ ' bg-[#f1faf1] border-[#6ad171]': objSettings.fontSize === size.value }"
-      class="relative w-8 h-8 flex justify-center items-center p-[2px] border rounded-md cursor-pointer hover:scale-110 transition-all duration-150"
-      @click="fabricSettingStore.setObjSetting('fontSize', size.value)"
-    >
-      {{ size.label }}
+  <div class="flex items-center gap-2 mt-2">
+    <div class="flex gap-2 w-full items-center">
+      <div
+        v-for="size in fontSizes"
+        :key="size.label"
+        :class="{ ' bg-[#f1faf1] !border-[#6ad171]': objSettings.fontSize === size.value }"
+        class="relative min-w-8 h-8 border-transparent hover:bg-[#f5faf5] flex justify-center items-center p-[2px] border rounded-md cursor-pointer hover:scale-110 transition-all duration-150"
+        @click="fabricSettingStore.setObjSetting('fontSize', size.value)"
+      >
+        {{ size.label }}
+      </div>
+
+      <Select
+        class="flex-auto"
+        :model-value="String(objSettings.fontSize)"
+        @update:model-value="fabricSettingStore.setObjSetting('fontSize', Number($event))"
+      >
+        <SelectTrigger class="text-xs h-8">
+          <!-- <SelectValue /> -->
+          {{ objSettings.fontSize }}
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem
+              v-for="n in 20"
+              :key="n"
+              :value="String(n * 4)"
+            >
+              {{ n * 4 }}
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </div>
   </div>
 </template>

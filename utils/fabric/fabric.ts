@@ -281,7 +281,7 @@ export function createFabricObject(
     case 'text': {
       const textbox = new Textbox('', {
         id: uuidv4(),
-        fontSize: 40,
+        fontSize: fabricSetting.getObjSetting('fontSize'),
         top: option.top,
         left: option.left,
         editingBorderColor: 'transparent',

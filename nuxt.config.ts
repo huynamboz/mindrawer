@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@pinia/nuxt',
     'shadcn-nuxt',
+    '@vueuse/motion/nuxt',
   ],
   devtools: { enabled: true },
   app: {

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import type { EditorSetting, ObjectSetting } from '~/types/editorSetting';
 import { updateLinePosition } from '~/utils/fabric/lineControl';
 
@@ -8,6 +9,7 @@ export interface SettingMoreOptions {
   temp: boolean;
 }
 export const useFabricSettingStore = defineStore('fabric-settings', () => {
+  const id = ref(uuidv4());
   const objectSettings = ref<ObjectSetting>({
     fill: 'transparent',
     stroke: '#000000',
@@ -30,6 +32,9 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     recentStrokeColors: [],
   });
 
+  function rerenderSetting() {
+    id.value = uuidv4();
+  }
   // load from local storage
   console.log('load from local storage', objectSettings.value);
   function loadSettingFromLocalStorage() {
@@ -135,6 +140,7 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
   }
 
   return {
+    id,
     editorSettings,
     objectSettings,
     setEditorSetting,
@@ -143,5 +149,6 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     getObjSetting,
     updateRecentColorFromLocal,
     loadSettingFromLocalStorage,
+    rerenderSetting,
   };
 });

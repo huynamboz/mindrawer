@@ -144,7 +144,7 @@ const imgAlphaBase64 = createAlphaSquare(4).toDataURL();
       {{ label }}
     </p>
     <div class="flex gap-2 mt-2 items-center">
-      <div class="border w-full py-1 px-2 rounded-lg flex items-center gap-2">
+      <div class="border w-full py-0 px-[2px] rounded-lg flex items-center gap-2">
         <div
           class="min-w-5 h-5 rounded-md cursor-pointer"
           :style="{ background: currentColor === 'transparent' ? `url(${imgAlphaBase64})` : currentColor }"

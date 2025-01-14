@@ -31,8 +31,8 @@ const strokeWidths = [1, 2, 3, 4];
       <div
         v-for="strokeWidth in strokeWidths"
         :key="strokeWidth"
-        class="w-8 h-8 border rounded-lg px-2 cursor-pointer flex justify-center items-center"
-        :class="{ 'border-[#6ad171] bg-[#f1faf1]': objSettings.strokeWidth === strokeWidth }"
+        class="w-8 h-8 border rounded-lg border-transparent hover:bg-[#f1faf1] px-2 cursor-pointer flex justify-center items-center"
+        :class="{ '!border-[#6ad171] bg-[#f1faf1]': objSettings.strokeWidth === strokeWidth }"
         @click="fabricSettingStore.setObjSetting('strokeWidth', strokeWidth)"
       >
         <div
@@ -48,7 +48,7 @@ const strokeWidths = [1, 2, 3, 4];
         @keydown.backspace.stop
       >
         <NumberFieldContent>
-          <NumberFieldInput />
+          <NumberFieldInput class="h-8" />
         </NumberFieldContent>
       </NumberField>
     </div>

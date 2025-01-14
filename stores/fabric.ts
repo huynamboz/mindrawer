@@ -1,5 +1,6 @@
 import type { ActiveSelection, FabricObject } from 'fabric';
 import { Canvas, Point } from 'fabric';
+import { useFabricSettingStore } from './editorSetting';
 import type { ToolType } from '~/types/toolbar';
 import { defaultObjectControl } from '~/utils/fabric/fabric';
 import { updateLinePositionWrapper } from '~/utils/fabric/lineControl';
@@ -96,7 +97,9 @@ export const useFabricStore = defineStore('fabric', () => {
   }
 
   function setActiveTool(action: ToolType) {
-    if (!canvas.value) return;
+    if (!canvas.value || action === activeTool.value) return;
+
+    const fabricSettingStore = useFabricSettingStore();
     activeTool.value = action;
     canvas.value.defaultCursor = 'crosshair';
 
@@ -117,6 +120,7 @@ export const useFabricStore = defineStore('fabric', () => {
         obj.selectable = false;
         obj.evented = false;
       });
+      fabricSettingStore.rerenderSetting();
       canvas.value.renderAll();
     }
     else if (action === 'select') {

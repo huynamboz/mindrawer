@@ -2,13 +2,15 @@
 import ToolBar from '~/components/base/ToolBar.vue';
 import ZoomControl from '~/components/base/ZoomControl.vue';
 import Settings from '~/components/base/Settings.vue';
+
+const fabricSettingStore = useFabricSettingStore();
 </script>
 
 <template>
   <div class="w-full h-lvh">
     <ToolBar />
     <ZoomControl />
-    <Settings />
+    <Settings :key="fabricSettingStore.id" />
     <a
       href="https://github.com/huynamboz/mindrawer"
       target="_blank"

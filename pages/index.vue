@@ -35,6 +35,7 @@ useSeoMeta({
 
 const shiftState = useKeyModifier('Shift');
 const fabricStore = useFabricStore();
+const fabricSettingStore = useFabricSettingStore();
 const canvasElement = ref<HTMLCanvasElement | null>(null);
 
 const canvas = computed(() => fabricStore.canvas);
@@ -87,6 +88,10 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
 function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
   if (!canvas.value) {
     return;
+  }
+
+  if (opt.target || fabricStore.activeTool === 'select') {
+    fabricSettingStore.rerenderSetting();
   }
 
   const evt = opt.e;
