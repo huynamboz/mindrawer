@@ -287,11 +287,13 @@ export function createFabricObject(
         editingBorderColor: 'transparent',
         objectCaching: false,
         charSpacing: 1, // fix cursor wrong position when apply custom font
+        fontWeight: fabricSetting.getObjSetting('fontWeight'),
         stroke: fabricSetting.getObjSetting('stroke'),
         fill: fabricSetting.getObjSetting('stroke'),
         fontFamily: fabricSetting.getObjSetting('fontFamily'),
         ...defaultObjectControl,
       });
+      textbox.dirty = true;
 
       textbox.on('selected', (e) => {
         fabricSetting.setObjSetting('fontFamily', textbox.fontFamily as string, { temp: true });

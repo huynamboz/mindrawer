@@ -82,6 +82,7 @@ onKeyStroke('Backspace', () => {
   if (!fabricStore.canvas || isAnyTextboxEditing()) return;
   const objects = fabricStore.canvas.getActiveObjects();
   fabricStore.canvas.remove(...objects);
+  fabricStore.canvas.discardActiveObject();
   fabricStore.canvas.renderAll();
 });
 

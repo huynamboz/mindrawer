@@ -10,8 +10,8 @@ const objSettings = computed(() => fabricSettingStore.objectSettings);
 const editorSettings = computed(() => fabricSettingStore.editorSettings);
 const settings = [
   {
-    type: ['text'],
-    options: ['stroke', 'fontColor', 'fontFamily', 'fontSize', 'opacity'],
+    type: ['textbox', 'text'],
+    options: ['fontColor', 'fontFamily', 'fontSize', 'opacity'],
   },
   {
     type: ['rect', 'triangle', 'ellipse', 'line', 'line3'],
@@ -41,7 +41,7 @@ const settingsFilter = computed(() => {
     class="fixed max-h-[80vh] h-fit top-20 right-3 z-50"
   >
     <div
-      class="relative font-light text-gray-600 text-xs p-3 h-fit rounded-xl w-[240px] border bg-white shadow-lg"
+      class="relative flex flex-col gap-5 font-light text-gray-600 text-xs p-3 h-fit rounded-xl w-[240px] border bg-white shadow-lg"
     >
       <template
         v-for="setting in settingsFilter.options"
@@ -58,7 +58,6 @@ const settingsFilter = computed(() => {
 
         <div
           v-if="setting === 'stroke'"
-          class="mt-4"
         >
           <SettingColor
             label="Stroke"
@@ -70,7 +69,6 @@ const settingsFilter = computed(() => {
 
         <div
           v-if="setting === 'fontColor'"
-          class="mt-4"
         >
           <SettingColor
             label="Font color"
@@ -83,21 +81,18 @@ const settingsFilter = computed(() => {
 
         <div
           v-if="setting === 'fontFamily'"
-          class="mt-4"
         >
           <SettingFont />
         </div>
         <!-- stroke width -->
         <div
           v-if="setting === 'strokeWidth'"
-          class="mt-4"
         >
           <SettingStrokeWidth />
         </div>
         <!-- opacity -->
         <div
           v-if="setting === 'opacity'"
-          class="mt-4"
         >
           <p class="mb-2">
             Opacity:

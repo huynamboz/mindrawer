@@ -6,6 +6,7 @@ export interface ObjectSetting {
   opacity: number;
   fontFamily: string;
   fontSize: number;
+  fontWeight: string;
 }
 export interface EditorSetting {
   theme: string;

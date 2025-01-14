@@ -18,6 +18,7 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     opacity: 1,
     fontFamily: 'Poppins',
     fontSize: 40,
+    fontWeight: 'regular',
   });
 
   const editorSettings = ref<EditorSetting>({
@@ -97,9 +98,6 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
 
     if (!option.temp) {
       saveSettingToLocalStorage();
-    }
-    else {
-      return;
     }
 
     const fabricStore = useFabricStore();
