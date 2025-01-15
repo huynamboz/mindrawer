@@ -107,7 +107,6 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     // save to local storage
     const objectActive = canvas.getActiveObject();
 
-    console.log('set', objectActive);
     if (objectActive) {
       // objectActive?.set(key, value);
       const lineIds = objectActive.get('lineIds') as string[];

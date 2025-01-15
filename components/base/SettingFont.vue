@@ -83,6 +83,10 @@ function restoreInitialFont() {
   fabricSettingStore.loadSettingFromLocalStorage();
   fabricSettingStore.setObjSetting('fontFamily', objSettings.value.fontFamily);
 }
+
+onBeforeMount(() => {
+  handleSelectFontProperty({});
+});
 </script>
 
 <template>

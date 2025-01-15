@@ -10,6 +10,7 @@ import {
   type ActiveSelection,
 } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
+import type { ObjectCustomType } from '~/types/fabric';
 
 export const CIRCLE_RADIUS = 4;
 
@@ -27,6 +28,7 @@ export function makeCircle(
     radius: CIRCLE_RADIUS,
     fill: '#fff',
     stroke: '#0b99ff',
+    customType: 'pointControl',
   });
   c.hasControls = c.hasBorders = false;
 
@@ -35,7 +37,7 @@ export function makeCircle(
   return c;
 }
 
-export function makeLine(coords: [number, number, number, number]) {
+export function makeLine(coords: [number, number, number, number], type: ObjectCustomType) {
   const fabricSetting = useFabricSettingStore();
   const line = new Line(coords, {
     id: uuidv4(),
@@ -46,6 +48,7 @@ export function makeLine(coords: [number, number, number, number]) {
     evented: true,
     noScaleCache: false,
     strokeUniform: true,
+    customType: type,
   });
 
   // must select by per pixel to select line

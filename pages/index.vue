@@ -13,7 +13,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useKeyModifier } from '@vueuse/core';
 import { handlePasteImage } from '~/utils/fabric/image';
 import { createFabricObject } from '~/utils/fabric/fabric';
-import { CIRCLE_RADIUS } from '~/utils/fabric/lineControl';
+import { CIRCLE_RADIUS, updateLinePosition } from '~/utils/fabric/lineControl';
 
 useHead({
   htmlAttrs: { lang: 'en' },
@@ -196,21 +196,20 @@ function handleMouseMove(opt: TPointerEventInfo<TPointerEvent>) {
             top: pointer.y - CIRCLE_RADIUS,
             left: pointer.x - CIRCLE_RADIUS,
           });
-          if ('updateLinePosition' in fabricObj.value) {
-            if (fabricStore.activeTool === 'line3') {
-              (fabricObj.value as any).updateLinePosition(
-                fabricObj.value,
-                true,
-              );
-            }
-            else {
-              (fabricObj.value as any).updateLinePosition(fabricObj.value);
-            }
+          if (fabricStore.activeTool === 'line3') {
+            updateLinePosition(
+              fabricObj.value,
+              true,
+            );
+          }
+          else {
+            console.log('line moving', fabricObj.value);
+            updateLinePosition(fabricObj.value);
           }
           break;
         case 'line':
           console.log('line moving', fabricObj.value);
-          (fabricObj.value as any).updateLinePosition(fabricObj.value, true);
+          updateLinePosition(fabricObj.value, true);
           break;
       }
       fabricObj.value.setCoords();

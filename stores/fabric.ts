@@ -1,9 +1,13 @@
-import type { ActiveSelection, FabricObject } from 'fabric';
+import { FabricObject, type ActiveSelection } from 'fabric';
 import { Canvas, Point } from 'fabric';
+import FontFaceObserver from 'fontfaceobserver';
 import { useFabricSettingStore } from './editorSetting';
 import type { ToolType } from '~/types/toolbar';
 import { defaultObjectControl } from '~/utils/fabric/fabric';
 import { updateLinePositionWrapper } from '~/utils/fabric/lineControl';
+import { getAdditionalObjectKey } from '~/utils/fabric';
+import { deselectAllPoint, assignEventToObj } from '~/utils/fabricEventHandler';
+import { fitTextboxToContent } from '~/utils/fabric/utils';
 
 export const useFabricStore = defineStore('fabric', () => {
   const canvas = ref<Canvas>();
@@ -37,7 +41,7 @@ export const useFabricStore = defineStore('fabric', () => {
 
   // preserveObjectStacking - Không thay đổi z-index của object khi click
   // targetFindTolerance - vùng xung quanh object để có thể click trúng
-  function init(canvasElement: HTMLCanvasElement) {
+  async function init(canvasElement: HTMLCanvasElement) {
     canvasHTMLElement.value = canvasElement;
     canvas.value = markRaw(
       new Canvas(canvasElement, {
@@ -51,13 +55,65 @@ export const useFabricStore = defineStore('fabric', () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // document.addEventListener('mousemove', (e) => {
-    //   mousePosition.value = { x: e.clientX, y: e.clientY };
-    // });
+    // Load canvas from local storage
+    const savedCanvas = localStorage.getItem('canvas');
+
+    const fontFamilyList = savedCanvas?.match(/fontFamily":"(.*?)"/g)?.map(match => match.replace(/fontFamily":"(.*?)"/, '$1'));
+    const fontWeights = savedCanvas?.match(/fontWeight":"(.*?)"/g)?.map(match => match.replace(/fontWeight":"(.*?)"/, '$1'));
+    console.log('fontFamilyList', fontFamilyList);
+
+    if (fontFamilyList && fontWeights) {
+      const uniqueFontFamilyList = Array.from(new Set(fontFamilyList));
+      const uniqueFontWeightList = Array.from(new Set(fontWeights));
+      const fontPromises = [] as Promise<void>[];
+
+      uniqueFontFamilyList.forEach((fontFamily) => {
+        uniqueFontWeightList.forEach((fontWeight) => {
+          const fontFace = new FontFaceObserver(fontFamily, { weight: fontWeight });
+          fontPromises.push(
+            fontFace.load().then(() => {
+              console.log(`Font is available: ${fontFamily}, weight: ${fontWeight}`);
+            }).catch(() => {
+              console.log(`Font is not available: ${fontFamily}, weight: ${fontWeight}`);
+            }),
+          );
+        });
+      });
+      try {
+        await Promise.all(fontPromises);
+      }
+      catch (error) {
+        console.error('Error loading font', error);
+      }
+    }
+
+    if (savedCanvas) {
+      canvas.value.loadFromJSON(savedCanvas, (o, obj) => {
+        if (obj && obj instanceof FabricObject) {
+          assignEventToObj(obj);
+          canvas.value?.requestRenderAll();
+        }
+      });
+    }
+
+    setInterval(() => {
+      localStorage.setItem('canvas', JSON.stringify(canvas.value?.toDatalessJSON(getAdditionalObjectKey())));
+    }, 5000);
 
     canvas?.value.on('object:moving', function (e) {
+      console.log('object:moving');
       updateLinePositionWrapper(e.target);
     });
+
+    canvas.value?.on('mouse:down', function (e) {
+      const target = e.target;
+      console.log('mouse:down', target);
+      if (!target) {
+        deselectAllPoint();
+      }
+    });
+
+    canvas.value?.on('text:changed', fitTextboxToContent);
 
     canvas.value.on('object:scaling', function (e) {
       updateLinePositionWrapper(e.target);
