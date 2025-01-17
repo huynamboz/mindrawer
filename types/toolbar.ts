@@ -7,7 +7,9 @@ export type ToolType =
   | 'ellipse'
   | 'line'
   | 'line3'
-  | 'text';
+  | 'text'
+  | 'image'
+  ;
 
 export interface Toolbar {
   name: string;

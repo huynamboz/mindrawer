@@ -4,7 +4,6 @@ import {
   type FabricObjectProps,
   Rect,
   Circle,
-  Line,
   Ellipse,
   Textbox,
 } from 'fabric';
@@ -19,10 +18,6 @@ import {
 } from './lineControl';
 import type { ToolType } from '~/types/toolbar';
 import { ObjectCustomType } from '~/types/fabric';
-
-interface ObjectOptions {
-  startPoints?: number[];
-}
 
 export const defaultObjectControl = {
   cornerColor: 'white',
@@ -54,7 +49,6 @@ export const defaultObjectOptions = {
 export function createFabricObject(
   type: ToolType,
   option: Partial<FabricObjectProps>,
-  moreOptions?: Partial<ObjectOptions>,
 ) {
   const fabricStore = useFabricStore();
   const fabricSetting = useFabricSettingStore();
@@ -67,101 +61,95 @@ export function createFabricObject(
   const options = { ...defaultObjectOptions, ...option };
   switch (type) {
     case 'line':
-      if (moreOptions?.startPoints) {
-        const [x1, y1] = moreOptions.startPoints;
+    { const { x: x1, y: y1 } = fabricStore.mousePosition;
 
-        const line = makeLine([x1, y1, x1, y1], ObjectCustomType.LINE_TWO_POINT);
-        assignEventToObj(line);
-        const lineId = line.get('id');
+      const line = makeLine([x1, y1, x1, y1], ObjectCustomType.LINE_TWO_POINT);
+      assignEventToObj(line);
+      const lineId = line.get('id');
 
-        const firstPoint = makeCircle(
-          line.get('x1') - CIRCLE_RADIUS,
-          line.get('y1') - CIRCLE_RADIUS,
-          [lineId, lineId],
-          'start',
-        );
-        const endPoint = makeCircle(
-          line.get('x2') - CIRCLE_RADIUS / 2,
-          line.get('y2') - CIRCLE_RADIUS / 2,
-          [lineId, lineId],
-          'end',
-        );
+      const firstPoint = makeCircle(
+        line.get('x1') - CIRCLE_RADIUS,
+        line.get('y1') - CIRCLE_RADIUS,
+        [lineId, lineId],
+        'start',
+      );
+      const endPoint = makeCircle(
+        line.get('x2') - CIRCLE_RADIUS / 2,
+        line.get('y2') - CIRCLE_RADIUS / 2,
+        [lineId, lineId],
+        'end',
+      );
 
-        canvas?.add(line, firstPoint);
-        canvas?.bringObjectToFront(firstPoint);
+      canvas?.add(line, firstPoint);
+      canvas?.bringObjectToFront(firstPoint);
 
-        line.set({
-          pointIds: [firstPoint.get('id'), endPoint.get('id')],
-        });
+      line.set({
+        pointIds: [firstPoint.get('id'), endPoint.get('id')],
+      });
 
-        return endPoint;
-      }
-      else return makeLine([100, 100, 100, 100], ObjectCustomType.LINE_TWO_POINT);
-
+      return endPoint;
+    }
     case 'line3':
-      if (moreOptions?.startPoints) {
-        const [x1, y1] = moreOptions.startPoints;
+    { const { x: x1, y: y1 } = fabricStore.mousePosition;
 
-        const line = makeLine([x1, y1, x1, y1], ObjectCustomType.LINE_THREE_POINT);
-        const line2 = makeLine([x1, y1, x1, y1], ObjectCustomType.LINE_THREE_POINT);
-        const lineId = line.get('id');
-        const lineId2 = line2.get('id');
+      const line = makeLine([x1, y1, x1, y1], ObjectCustomType.LINE_THREE_POINT);
+      const line2 = makeLine([x1, y1, x1, y1], ObjectCustomType.LINE_THREE_POINT);
+      const lineId = line.get('id');
+      const lineId2 = line2.get('id');
 
-        [line, line2].forEach((l) => {
-          assignEventToObj(l);
-        });
+      [line, line2].forEach((l) => {
+        assignEventToObj(l);
+      });
 
-        const firstPoint = makeCircle(
-          line.get('x1') - CIRCLE_RADIUS,
-          line.get('y1') - CIRCLE_RADIUS,
-          [lineId, lineId2],
-          'start',
-        );
-        const midPoint = makeCircle(
-          line.get('x2'),
-          line.get('y2'),
-          [lineId, lineId2],
-          'mid',
-        );
-        const endPoint = makeCircle(
-          line.get('x2'),
-          line.get('y2'),
-          [lineId, lineId2],
-          'end',
-        );
+      const firstPoint = makeCircle(
+        line.get('x1') - CIRCLE_RADIUS,
+        line.get('y1') - CIRCLE_RADIUS,
+        [lineId, lineId2],
+        'start',
+      );
+      const midPoint = makeCircle(
+        line.get('x2'),
+        line.get('y2'),
+        [lineId, lineId2],
+        'mid',
+      );
+      const endPoint = makeCircle(
+        line.get('x2'),
+        line.get('y2'),
+        [lineId, lineId2],
+        'end',
+      );
 
-        canvas?.add(line, line2, firstPoint, midPoint);
-        canvas?.bringObjectToFront(firstPoint);
-        canvas?.bringObjectToFront(midPoint);
+      canvas?.add(line, line2, firstPoint, midPoint);
+      canvas?.bringObjectToFront(firstPoint);
+      canvas?.bringObjectToFront(midPoint);
 
-        const groupId = uuidv4();
-        endPoint.set({
-          groupId,
-          midPointId: midPoint.get('id'),
-        });
+      const groupId = uuidv4();
+      endPoint.set({
+        groupId,
+        midPointId: midPoint.get('id'),
+      });
 
-        line.set({
-          groupId,
-          pointIds: [
-            firstPoint.get('id'),
-            midPoint.get('id'),
-            endPoint.get('id'),
-          ],
-          lineIds: [lineId, lineId2],
-        });
+      line.set({
+        groupId,
+        pointIds: [
+          firstPoint.get('id'),
+          midPoint.get('id'),
+          endPoint.get('id'),
+        ],
+        lineIds: [lineId, lineId2],
+      });
 
-        line2.set({
-          groupId,
-          pointIds: [
-            firstPoint.get('id'),
-            midPoint.get('id'),
-            endPoint.get('id'),
-          ],
-          lineIds: [lineId, lineId2],
-        });
-        return endPoint;
-      }
-      else return new Line([0, 0, 0, 0], options);
+      line2.set({
+        groupId,
+        pointIds: [
+          firstPoint.get('id'),
+          midPoint.get('id'),
+          endPoint.get('id'),
+        ],
+        lineIds: [lineId, lineId2],
+      });
+      return endPoint; }
 
     case 'triangle': {
       const triangle = new Triangle(options);

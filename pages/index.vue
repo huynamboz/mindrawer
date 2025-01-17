@@ -52,6 +52,11 @@ const fabricObj = ref<FabricObject<
   ObjectEvents
 > | null>();
 
+const zoomOffset = ref({ x: 0, y: 0, delta: 0 });
+const panOffset = ref({ deltaX: 0, deltaY: 0 });
+const zoomUpdated = ref(false);
+const panUpdated = ref(false);
+
 // Pinch to zoom - https://turriate.com/articles/how-to-pinch-to-zoom-2-finger-pan-fabricjs-canvas
 function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
   if (!canvas.value) {
@@ -62,27 +67,66 @@ function handleZoomCanvas(opt: TPointerEventInfo<WheelEvent>) {
 
   if (opt.e.ctrlKey) {
     const delta = opt.e.deltaY;
-    let zoom = canvas.value.getZoom();
-    zoom *= 0.985 ** delta;
-    fabricStore.setZoom(zoom, {
-      point: new Point(opt.e.offsetX, opt.e.offsetY),
-    });
+    // let zoom = canvas.value.getZoom();
+    // zoom *= 0.985 ** delta;
+    // fabricStore.setZoom(zoom, {
+    //   point: new Point(opt.e.offsetX, opt.e.offsetY),
+    // });
+    // canvas.value.renderAll();
+    zoomUpdated.value = false;
+    zoomOffset.value = {
+      x: opt.e.offsetX,
+      y: opt.e.offsetY,
+      delta,
+    };
   }
   else {
     // Di chuyển canvas (pan)
-    const e = opt.e;
-    const vpt = canvas.value.viewportTransform;
+    // const e = opt.e;
+    // const vpt = canvas.value.viewportTransform;
 
+    panUpdated.value = false;
+    panOffset.value = {
+      deltaX: opt.e.deltaX,
+      deltaY: opt.e.deltaY,
+    };
     // Đảo chiều giá trị delta để pan hoạt động đúng hướng
-    vpt[4] -= e.deltaX;
-    vpt[5] -= e.deltaY;
-    // Set coord to fix bug object move but control dot not
+    // vpt[4] -= e.deltaX;
+    // vpt[5] -= e.deltaY;
+    // // Set coord to fix bug object move but control dot not
+    // canvas.value.getActiveObjects().forEach((o) => {
+    //   o.setCoords();
+    // });
+    // canvas.value.getActiveObject()?.setCoords();
+    // canvas.value.renderAll();
+  }
+}
+
+function update() {
+  if (!canvas.value) {
+    return;
+  }
+  if (!zoomUpdated.value) {
+    let zoom = canvas.value.getZoom();
+    zoom *= 0.985 ** zoomOffset.value.delta;
+    fabricStore.setZoom(zoom, {
+      point: new Point(zoomOffset.value.x, zoomOffset.value.y),
+    });
+    zoomUpdated.value = true;
+  }
+
+  if (!panUpdated.value) {
+    const vpt = canvas.value.viewportTransform;
+    vpt[4] -= panOffset.value.deltaX;
+    vpt[5] -= panOffset.value.deltaY;
     canvas.value.getActiveObjects().forEach((o) => {
       o.setCoords();
     });
     canvas.value.getActiveObject()?.setCoords();
-    canvas.value.requestRenderAll();
+    canvas.value.renderAll();
+    panUpdated.value = true;
   }
+  requestAnimationFrame(update);
 }
 
 function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
@@ -114,9 +158,6 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
           {
             left: startX.value,
             top: startY.value,
-          },
-          {
-            startPoints: [startX.value, startY.value],
           },
         ),
       );
@@ -266,6 +307,8 @@ onMounted(() => {
   canvas.value.on('mouse:up', handleMouseUp);
 
   document.addEventListener('paste', handlePasteImage);
+
+  requestAnimationFrame(update);
 });
 </script>
 

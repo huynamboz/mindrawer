@@ -55,6 +55,12 @@ const toolbars = ref<Toolbar[]>([
     action: 'text',
     key: 'k',
   },
+  {
+    name: 'Image',
+    icon: 'i-ph-image',
+    action: 'image',
+    key: 'l',
+  },
 ]);
 
 const isAnyTextboxEditing = () => {
@@ -122,24 +128,6 @@ watch(space, (v) => {
         </span>
         tool
       </p>
-      <!-- <div class="h-full border-r flex items-center gap-1 px-1">
-      <div
-        :class="{ '!bg-slate-200': fabricStore.activeTool === toolbars[0].action }"
-        class="w-8 h-8 hover:bg-slate-100 flex cursor-pointer rounded-md items-center justify-center"
-        @click="fabricStore.setActiveTool('move')"
-      >
-        <span class="i-lineicons-hand" />
-      </div>
-      <div
-        :class="{ '!bg-slate-200': fabricStore.activeTool === toolbars[1].action }"
-        class="w-8 h-8 hover:bg-slate-100 flex cursor-pointer rounded-md items-center justify-center"
-        @click="fabricStore.setActiveTool('select')"
-      >
-        <span class="i-lineicons-location-arrow-right" />
-      </div>
-    </div> -->
-
-      <!-- list -->
       <div
         v-for="(toolbar, index) in toolbars"
         :key="toolbar.name"
