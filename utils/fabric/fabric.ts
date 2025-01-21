@@ -6,6 +6,7 @@ import {
   Circle,
   Ellipse,
   Textbox,
+  Canvas,
 } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -202,4 +203,61 @@ export function createFabricObject(
     default:
       return new Rect(options);
   }
+}
+
+export async function exportObjectSelected(type: 'jpeg' | 'png') {
+  const fabricStore = useFabricStore();
+
+  const canvasInitial = fabricStore.canvas;
+
+  if (!canvasInitial) return null;
+
+  // const selectedObjects = fabricStore.canvas?.getActiveObjects();
+  // if (!selectedObjects) return null;
+
+  // const url = canvas.toDataURL({
+  //   format: 'png',
+  //   quality: 1,
+  //   width: canvas.width,
+  //   height: canvas.height,
+  //   left: 0,
+  //   top: 0,
+  //   multiplier: 2,
+  // });
+
+  const activeSelection = canvasInitial.getActiveObject();
+  const tempFabricCanvasElement = document.createElement('canvas');
+  const tempFabricCanvas = new Canvas(tempFabricCanvasElement, {
+    width: activeSelection?.width,
+    height: activeSelection?.height,
+  });
+
+  if (activeSelection) {
+    const cloned = await activeSelection.clone();
+    tempFabricCanvas.add(cloned);
+    tempFabricCanvas.renderAll();
+    tempFabricCanvas.forEachObject((obj) => {
+      obj.set({
+        top: 0,
+        left: 0,
+      });
+    });
+  }
+
+  const url = tempFabricCanvas.toDataURL({
+    format: type,
+    quality: 1,
+    left: 0,
+    top: 0,
+    multiplier: 2,
+    width: activeSelection?.width,
+    height: activeSelection?.height,
+  });
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'export-jpg';
+  link.click();
+
+  tempFabricCanvas.dispose();
 }

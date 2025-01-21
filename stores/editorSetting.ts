@@ -18,7 +18,7 @@ export const useFabricSettingStore = defineStore('fabric-settings', () => {
     opacity: 1,
     fontFamily: 'Poppins',
     fontSize: 40,
-    fontWeight: 'regular',
+    fontWeight: '400',
   });
 
   const editorSettings = ref<EditorSetting>({

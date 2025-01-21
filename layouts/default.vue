@@ -2,6 +2,7 @@
 import ToolBar from '~/components/base/ToolBar.vue';
 import ZoomControl from '~/components/base/ZoomControl.vue';
 import Settings from '~/components/base/Settings.vue';
+import ExportButton from '~/components/base/ExportButton.vue';
 
 const fabricSettingStore = useFabricSettingStore();
 </script>
@@ -11,6 +12,13 @@ const fabricSettingStore = useFabricSettingStore();
     <ToolBar />
     <ZoomControl />
     <Settings :key="fabricSettingStore.id" />
+
+    <img
+      class="fixed top-3 left-3 h-[20px]"
+      src="/logo.png"
+      alt=""
+    >
+
     <a
       href="https://github.com/huynamboz/mindrawer"
       target="_blank"
@@ -20,12 +28,9 @@ const fabricSettingStore = useFabricSettingStore();
       />
     </a>
 
-    <img
-      class="fixed top-3 left-3 h-[20px]"
-      src="/logo.png"
-      alt=""
-    >
-
+    <ExportButton
+      class="fixed top-3 right-12 z-50"
+    />
     <div
       class="max-md:hidden fixed top-3 left-1/2 flex items-center gap-1 h-[20px] -translate-x-1/2 z-50"
     >
