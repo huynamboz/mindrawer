@@ -139,7 +139,10 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
   }
 
   const evt = opt.e;
+  const pointer = canvas.value.getPointer(evt);
+  fabricStore.setMousePosition(pointer.x, pointer.y);
   isMouseDown.value = true;
+
   if (fabricStore.activeTool === 'move') {
     lastPosX.value
       = 'clientX' in evt ? evt.clientX : (evt as TouchEvent).touches[0].clientX;
