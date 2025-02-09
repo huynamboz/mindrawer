@@ -3,6 +3,7 @@ const a = ref('s');
 console.log(a.value);
 </script>
 
+
 <template>
   <div>
     <NuxtLoadingIndicator />
