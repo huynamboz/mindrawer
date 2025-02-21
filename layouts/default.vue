@@ -13,7 +13,7 @@ const fabricSettingStore = useFabricSettingStore();
     <ToolBar />
     <ZoomControl />
     <Settings :key="fabricSettingStore.id" />
-    <div class="fixed bottom-3 left-3 z-50">
+    <div class="fixed bottom-3 left-3 z-50 max-md:bottom-24">
       <HistoryControl />
     </div>
 
