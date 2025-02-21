@@ -89,7 +89,7 @@ export const useFabricStore = defineStore('fabric', () => {
     }
 
     if (savedCanvas) {
-      canvas.value.loadFromJSON(savedCanvas, (o, obj) => {
+      await canvas.value.loadFromJSON(savedCanvas, (o, obj) => {
         if (obj && obj instanceof FabricObject) {
           assignEventToObj(obj);
           canvas.value?.requestRenderAll();
@@ -147,6 +147,9 @@ export const useFabricStore = defineStore('fabric', () => {
         group.set(defaultObjectControl);
       }
     });
+
+    const fabricHistoryStore = useFabricHistoryStore();
+    fabricHistoryStore.historyInit();
   }
 
   function setMousePosition(x: number, y: number) {

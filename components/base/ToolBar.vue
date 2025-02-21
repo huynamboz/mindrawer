@@ -2,9 +2,10 @@
 import { onKeyStroke, useMagicKeys } from '@vueuse/core';
 import type { Toolbar } from '~/types/toolbar';
 
-const { space } = useMagicKeys();
+const { space, Ctrl_Z, meta_Z, Ctrl_Y, meta_Shift_Z } = useMagicKeys();
 
 const fabricStore = useFabricStore();
+const fabricHistoryStore = useFabricHistoryStore();
 
 const toolbars = ref<Toolbar[]>([
   {
@@ -71,6 +72,7 @@ const isAnyTextboxEditing = () => {
   return objects.some(i => i.get('isEditing'));
 };
 
+// switch tool by key
 onKeyStroke(
   toolbars.value.map(i => i.key),
   (e) => {
@@ -84,6 +86,7 @@ onKeyStroke(
   },
 );
 
+// delete selected object
 onKeyStroke('Backspace', () => {
   if (!fabricStore.canvas || isAnyTextboxEditing()) return;
   const objects = fabricStore.canvas.getActiveObjects();
@@ -92,6 +95,7 @@ onKeyStroke('Backspace', () => {
   fabricStore.canvas.renderAll();
 });
 
+// switch to move tool when space is pressed
 watch(space, (v) => {
   if (
     fabricStore.activeTool === 'move'
@@ -108,6 +112,23 @@ watch(space, (v) => {
   }
   else {
     fabricStore.restoreActiveTool();
+  }
+});
+
+// undo redo
+watch([meta_Z, Ctrl_Z], (v) => {
+  // do something
+  if ((v[0] || v[1]) && !meta_Shift_Z.value) {
+    console.log('undo');
+    fabricHistoryStore.undo();
+  }
+});
+
+watch([meta_Shift_Z, Ctrl_Y], (v) => {
+  // do something
+  if (v[0] || v[1]) {
+    console.log('redo');
+    fabricHistoryStore.redo();
   }
 });
 </script>
