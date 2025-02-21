@@ -280,6 +280,11 @@ function handleMouseUp() {
         canvas.value.setActiveObject(fabricObj.value);
         canvas.value.renderAll();
         fabricObj.value = null;
+
+        // save history
+        const fabricHistoryStore = useFabricHistoryStore();
+        fabricHistoryStore.clearAfterIndex();
+        fabricHistoryStore.historySaveAction();
       }
     }
   }

@@ -3,6 +3,7 @@ import ToolBar from '~/components/base/ToolBar.vue';
 import ZoomControl from '~/components/base/ZoomControl.vue';
 import Settings from '~/components/base/Settings.vue';
 import ExportButton from '~/components/base/ExportButton.vue';
+import HistoryControl from '~/components/base/HistoryControl.vue';
 
 const fabricSettingStore = useFabricSettingStore();
 </script>
@@ -12,6 +13,9 @@ const fabricSettingStore = useFabricSettingStore();
     <ToolBar />
     <ZoomControl />
     <Settings :key="fabricSettingStore.id" />
+    <div class="fixed bottom-3 left-3 z-50">
+      <HistoryControl />
+    </div>
 
     <img
       class="fixed top-3 left-3 h-[20px]"
