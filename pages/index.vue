@@ -11,9 +11,9 @@ import {
 } from 'fabric';
 import { ref, computed, onMounted } from 'vue';
 import { useKeyModifier } from '@vueuse/core';
-import { handlePasteImage } from '~/utils/fabric/image';
 import { createFabricObject } from '~/utils/fabric/fabric';
 import { CIRCLE_RADIUS, updateLinePosition } from '~/utils/fabric/lineControl';
+import { handlePaste } from '~/utils/fabric/utils';
 
 useHead({
   htmlAttrs: { lang: 'en' },
@@ -314,7 +314,7 @@ onMounted(() => {
 
   canvas.value.on('mouse:up', handleMouseUp);
 
-  document.addEventListener('paste', handlePasteImage);
+  document.addEventListener('paste', handlePaste);
 
   requestAnimationFrame(update);
 });
