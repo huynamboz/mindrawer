@@ -316,6 +316,20 @@ onMounted(() => {
 
   document.addEventListener('paste', handlePaste);
 
+  document.addEventListener('copy', () => {
+    if (!canvas.value) return;
+    const objects = canvas.value.getActiveObjects();
+    if (objects.length === 0) return;
+    const clipboard = objects.map(o => o.toObject());
+    const content = JSON.stringify({
+      type: 'objects/mindrawer',
+      version: '1.0.0',
+      objects: clipboard,
+    });
+    // Copy to clipboard
+    navigator.clipboard.writeText(content);
+  });
+
   requestAnimationFrame(update);
 });
 </script>
