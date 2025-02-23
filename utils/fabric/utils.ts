@@ -24,7 +24,7 @@ export async function handlePaste(e: ClipboardEvent) {
   for (const item of items) {
     // paste images
     console.log(item.type);
-    if (item.type.indexOf('image') !== -1) {
+    if (item.type.includes('image') || item.type.includes('text/html')) {
       handlePasteImage(item);
     }
     else {
@@ -40,6 +40,7 @@ export async function handlePaste(e: ClipboardEvent) {
         return;
       }
 
+      if (!clipboardContentString.includes('objects/mindrawer')) return;
       let objects = [];
       try {
         const parsedData = JSON.parse(clipboardContentString);
