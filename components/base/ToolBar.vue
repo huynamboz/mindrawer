@@ -45,6 +45,12 @@ const toolbars = ref<Toolbar[]>([
     key: 'h',
   },
   {
+    name: 'Line',
+    img: '/assets/svg/arrows/4.svg',
+    action: 'arrow',
+    key: 'h',
+  },
+  {
     name: '3 path',
     icon: 'i-ph-line-segments',
     action: 'line3',
@@ -135,7 +141,7 @@ watch([meta_Shift_Z, Ctrl_Y], (v) => {
 
 <template>
   <div
-    class="fixed z-50 bottom-5 w-fit -translate-x-1/2 left-1/2 h-[40px] shadow-sm bg-white rounded-lg border"
+    class="fixed z-50 overflow-x-auto max-w-[90vw] bottom-5 w-fit -translate-x-1/2 left-1/2 h-[40px] shadow-sm bg-white rounded-lg border"
   >
     <div class="relative w-fit flex items-center gap-1 px-1 py-1">
       <p
@@ -169,7 +175,16 @@ watch([meta_Shift_Z, Ctrl_Y], (v) => {
           class="w-8 h-8 hover:bg-slate-100 flex cursor-pointer rounded-md items-center justify-center"
           @click="fabricStore.setActiveTool(toolbar.action)"
         >
-          <span :class="toolbar.icon" />
+          <span
+            v-if="toolbar.icon"
+            :class="toolbar.icon"
+          />
+          <img
+            v-else
+            :src="toolbar.img"
+            alt="arrow"
+            class="w-4 h-4"
+          >
         </div>
         <div
           v-if="index === 1"

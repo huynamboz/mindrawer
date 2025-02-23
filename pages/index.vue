@@ -155,15 +155,20 @@ function handleMouseDown(opt: TPointerEventInfo<MouseEvent>) {
     startY.value = pointer.y;
 
     if (!dragTools.includes(fabricStore.activeTool)) {
-      fabricObj.value = markRaw(
-        createFabricObject(
-          fabricStore.activeTool,
-          {
-            left: startX.value,
-            top: startY.value,
-          },
-        ),
+      const obj = createFabricObject(
+        fabricStore.activeTool,
+        {
+          left: startX.value,
+          top: startY.value,
+        },
       );
+
+      if (!obj) return;
+
+      fabricObj.value = markRaw(
+        obj,
+      );
+
       if (fabricObj.value) {
         canvas.value.add(fabricObj.value);
         if (fabricObj.value.type === 'textbox') {

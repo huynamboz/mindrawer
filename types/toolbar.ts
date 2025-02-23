@@ -9,11 +9,13 @@ export type ToolType =
   | 'line3'
   | 'text'
   | 'image'
+  | 'arrow'
   ;
 
 export interface Toolbar {
   name: string;
-  icon: string;
+  icon?: string;
   key: string;
   action: ToolType;
+  img?: string;
 }

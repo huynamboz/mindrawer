@@ -9,6 +9,7 @@ import {
   Canvas,
   util,
   loadSVGFromString,
+  loadSVGFromURL,
 } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -211,7 +212,7 @@ export function createFabricObject(
     }
 
     default:
-      return new Rect(options);
+      return null;
   }
 }
 
@@ -272,21 +273,34 @@ export async function exportObjectSelected(type: 'jpeg' | 'png') {
   tempFabricCanvas.dispose();
 }
 
-export const loadSVGFromClipboard = async (svg: string) => {
+interface LoadSVGOptions {
+  mode?: 'string' | 'url';
+  point?: { x: number; y: number };
+}
+export const loadSVGFromClipboard = async (svg: string, option?: LoadSVGOptions) => {
   const fabricStore = useFabricStore();
   const canvas = fabricStore.canvas;
   const mousePos = fabricStore.mousePosition;
+  const position = option?.point || { x: mousePos.x, y: mousePos.y };
 
   try {
-    const obj = await loadSVGFromString(svg);
+    // const obj = await loadSVGFromString(svg);
+    let obj;
+    if (option?.mode === 'url') {
+      obj = await loadSVGFromURL(svg);
+    }
+    else {
+      obj = await loadSVGFromString(svg);
+    }
     if (!obj.objects) return;
     const group = util.groupSVGElements(obj.objects.filter(o => o !== null), obj.options);
     group.set({
-      left: mousePos.x,
-      top: mousePos.y,
+      left: position.x,
+      top: position.y,
     });
     canvas?.add(group);
     canvas?.renderAll();
+    return group;
   }
   catch (error) {
     console.error('Error loading SVG from clipboard', error);
