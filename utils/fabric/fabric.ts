@@ -7,6 +7,8 @@ import {
   Ellipse,
   Textbox,
   Canvas,
+  util,
+  loadSVGFromString,
 } from 'fabric';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -261,3 +263,24 @@ export async function exportObjectSelected(type: 'jpeg' | 'png') {
 
   tempFabricCanvas.dispose();
 }
+
+export const loadSVGFromClipboard = async (svg: string) => {
+  const fabricStore = useFabricStore();
+  const canvas = fabricStore.canvas;
+  const mousePos = fabricStore.mousePosition;
+
+  try {
+    const obj = await loadSVGFromString(svg);
+    if (!obj.objects) return;
+    const group = util.groupSVGElements(obj.objects.filter(o => o !== null), obj.options);
+    group.set({
+      left: mousePos.x,
+      top: mousePos.y,
+    });
+    canvas?.add(group);
+    canvas?.renderAll();
+  }
+  catch (error) {
+    console.error('Error loading SVG from clipboard', error);
+  }
+};
