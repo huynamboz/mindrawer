@@ -7,6 +7,8 @@ export interface ObjectSetting {
   fontFamily: string;
   fontSize: number;
   fontWeight: string;
+  rx: number;
+  ry: number;
 }
 export interface EditorSetting {
   theme: string;

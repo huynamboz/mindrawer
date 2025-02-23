@@ -51,6 +51,15 @@ function handleMouseDownBaseShape(target: FabricObject) {
     o.target.perPixelTargetFind = true;
     fabricSetting.loadSettingFromLocalStorage();
   });
+
+  target.on('scaling', function () {
+    target.set({
+      width: target.width * target.scaleX,
+      height: target.height * target.scaleY,
+      scaleX: 1,
+      scaleY: 1,
+    });
+  });
 }
 
 function handleMouseDownText(target: FabricObject) {
