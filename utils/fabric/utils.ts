@@ -2,8 +2,6 @@ import { ActiveSelection, FabricObject, util, type IText } from 'fabric';
 import { loadSVGFromClipboard } from './fabric';
 import { handlePasteImage } from './image';
 
-const isSVGRegex = /<svg.*<\/svg>/;
-
 export function fitTextboxToContent(textV: { target: any }) {
   const text = textV.target as IText;
   const fabricStore = useFabricStore();
@@ -32,6 +30,14 @@ export async function handlePaste(e: ClipboardEvent) {
       // Paste object
       const clipboardContentString = e.clipboardData?.getData('text') || '';
       console.log(clipboardContentString);
+
+      // paste svg
+      const isSVGString = clipboardContentString.startsWith('<svg');
+      console.log('isSVGString', isSVGString);
+      if (isSVGString) {
+        await loadSVGFromClipboard(clipboardContentString);
+        return;
+      }
 
       let objects = [];
       try {
@@ -63,11 +69,6 @@ export async function handlePaste(e: ClipboardEvent) {
       });
       canvas.setActiveObject(activeSelection);
       canvas.requestRenderAll();
-
-      // paste svg
-      if (isSVGRegex.test(clipboardContentString)) {
-        loadSVGFromClipboard(clipboardContentString);
-      }
     }
   }
 };

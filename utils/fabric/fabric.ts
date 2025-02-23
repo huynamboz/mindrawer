@@ -155,13 +155,21 @@ export function createFabricObject(
       return endPoint; }
 
     case 'triangle': {
-      const triangle = new Triangle(options);
+      const triangle = new Triangle({
+        ...options,
+        rx: fabricSetting.getObjSetting('rx'),
+        ry: fabricSetting.getObjSetting('ry'),
+      });
       assignEventToObj(triangle);
       return triangle;
     }
 
     case 'rect': {
-      const rect = new Rect(options);
+      const rect = new Rect({
+        ...options,
+        rx: fabricSetting.getObjSetting('rx'),
+        ry: fabricSetting.getObjSetting('ry'),
+      });
       assignEventToObj(rect);
       return rect;
     }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SettingColor from './SettingColor.vue';
 import SettingStrokeWidth from './SettingStrokeWidth.vue';
+import SettingRounded from './SettingRounded.vue';
 import SettingFont from './SettingFont.vue';
 import { Slider } from '@/components/ui/slider';
 
@@ -11,11 +12,27 @@ const editorSettings = computed(() => fabricSettingStore.editorSettings);
 const settings = [
   {
     type: ['textbox', 'text'],
-    options: ['fontColor', 'fontFamily', 'fontSize', 'opacity'],
+    options: ['fontColor', 'fontFamily', 'fontSize', 'opacity', 'delete'],
   },
   {
-    type: ['rect', 'triangle', 'ellipse', 'line', 'line3'],
-    options: ['fill', 'stroke', 'strokeWidth', 'opacity'],
+    type: ['group'],
+    options: ['opacity', 'delete'],
+  },
+  {
+    type: ['rect'],
+    options: ['fill', 'stroke', 'strokeWidth', 'rounded', 'opacity', 'delete'],
+  },
+  {
+    type: ['triangle'],
+    options: ['fill', 'stroke', 'strokeWidth', 'rounded', 'opacity', 'delete'],
+  },
+  {
+    type: ['ellipse'],
+    options: ['fill', 'stroke', 'strokeWidth', 'opacity', 'delete'],
+  },
+  {
+    type: ['line', 'line3'],
+    options: ['stroke', 'strokeWidth', 'opacity', 'delete'],
   },
 ];
 
@@ -33,6 +50,14 @@ onBeforeMount(() => {
 const settingsFilter = computed(() => {
   return settings.find(setting => setting.type.includes(currentObjType.value)) || { options: [] };
 });
+
+function handleDeleteObjects() {
+  if (!fabricStore.canvas) return;
+  const objects = fabricStore.canvas.getActiveObjects();
+  fabricStore.canvas.remove(...objects);
+  fabricStore.canvas.discardActiveObject();
+  fabricStore.canvas.requestRenderAll();
+}
 </script>
 
 <template>
@@ -90,6 +115,14 @@ const settingsFilter = computed(() => {
         >
           <SettingStrokeWidth />
         </div>
+
+        <!-- rounded -->
+        <div
+          v-if="setting === 'rounded'"
+        >
+          <SettingRounded />
+        </div>
+
         <!-- opacity -->
         <div
           v-if="setting === 'opacity'"
@@ -107,6 +140,15 @@ const settingsFilter = computed(() => {
               $event && fabricSettingStore.setObjSetting('opacity', $event[0])
             "
           />
+        </div>
+
+        <!-- delete -->
+        <div
+          v-if="setting === 'delete'"
+          class="flex items-center justify-center py-1 border rounded-lg gap-2 cursor-pointer hover:bg-gray-100"
+          @click="handleDeleteObjects"
+        >
+          <span class="i-lineicons-trash-3 text-xl text-red-500" />
         </div>
       </template>
     </div>
