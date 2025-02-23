@@ -23,7 +23,8 @@ export async function handlePaste(e: ClipboardEvent) {
   if (!items || !canvas) return;
   for (const item of items) {
     // paste images
-    if (item.type.startsWith('image')) {
+    console.log(item.type);
+    if (item.type.indexOf('image') !== -1) {
       handlePasteImage(item);
     }
     else {

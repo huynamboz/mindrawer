@@ -3,6 +3,8 @@ import SettingColor from './SettingColor.vue';
 import SettingStrokeWidth from './SettingStrokeWidth.vue';
 import SettingRounded from './SettingRounded.vue';
 import SettingFont from './SettingFont.vue';
+import SettingArrow from './SettingArrow.vue';
+import SettingIndex from './SettingIndex.vue';
 import { Slider } from '@/components/ui/slider';
 
 const fabricStore = useFabricStore();
@@ -12,27 +14,35 @@ const editorSettings = computed(() => fabricSettingStore.editorSettings);
 const settings = [
   {
     type: ['textbox', 'text'],
-    options: ['fontColor', 'fontFamily', 'fontSize', 'opacity', 'delete'],
+    options: ['fontColor', 'fontFamily', 'fontSize', 'opacity', 'index', 'delete'],
   },
   {
-    type: ['group'],
-    options: ['opacity', 'delete'],
+    type: ['group', 'image'],
+    options: ['opacity', 'index', 'delete'],
+  },
+  {
+    type: ['path'],
+    options: ['opacity', 'fill', 'index', 'delete'],
   },
   {
     type: ['rect'],
-    options: ['fill', 'stroke', 'strokeWidth', 'rounded', 'opacity', 'delete'],
+    options: ['fill', 'stroke', 'strokeWidth', 'rounded', 'opacity', 'index', 'delete'],
   },
   {
     type: ['triangle'],
-    options: ['fill', 'stroke', 'strokeWidth', 'rounded', 'opacity', 'delete'],
+    options: ['fill', 'stroke', 'strokeWidth', 'rounded', 'opacity', 'index', 'delete'],
   },
   {
     type: ['ellipse'],
-    options: ['fill', 'stroke', 'strokeWidth', 'opacity', 'delete'],
+    options: ['fill', 'stroke', 'strokeWidth', 'opacity', 'index', 'delete'],
   },
   {
     type: ['line', 'line3'],
-    options: ['stroke', 'strokeWidth', 'opacity', 'delete'],
+    options: ['stroke', 'strokeWidth', 'opacity', 'index', 'delete'],
+  },
+  {
+    type: ['arrow'],
+    options: ['arrows', 'index', 'delete'],
   },
 ];
 
@@ -109,6 +119,21 @@ function handleDeleteObjects() {
         >
           <SettingFont />
         </div>
+
+        <!-- arrows -->
+        <div
+          v-if="setting === 'arrows'"
+        >
+          <SettingArrow />
+        </div>
+
+        <!-- index -->
+        <div
+          v-if="setting === 'index'"
+        >
+          <SettingIndex />
+        </div>
+
         <!-- stroke width -->
         <div
           v-if="setting === 'strokeWidth'"
