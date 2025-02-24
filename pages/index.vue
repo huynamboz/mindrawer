@@ -14,6 +14,7 @@ import { useKeyModifier } from '@vueuse/core';
 import { createFabricObject } from '~/utils/fabric/fabric';
 import { CIRCLE_RADIUS, updateLinePosition } from '~/utils/fabric/lineControl';
 import { handlePaste } from '~/utils/fabric/utils';
+import { getAdditionalObjectKey } from '~/utils/fabric';
 
 useHead({
   htmlAttrs: { lang: 'en' },
@@ -325,7 +326,7 @@ onMounted(() => {
     if (!canvas.value) return;
     const objects = canvas.value.getActiveObjects();
     if (objects.length === 0) return;
-    const clipboard = objects.map(o => o.toObject());
+    const clipboard = objects.map(o => o.toObject(getAdditionalObjectKey()));
     const content = JSON.stringify({
       type: 'objects/mindrawer',
       version: '1.0.0',

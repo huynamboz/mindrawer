@@ -18,6 +18,7 @@ export function getAdditionalObjectKey() {
     'renderOnAddRemove',
     'preserveObjectStacking',
     'selectionFullyContained',
+    'fileId',
     ...Object.keys(defaultObjectOptions),
   ]));
 

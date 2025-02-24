@@ -1,4 +1,4 @@
-import { FabricObject, type ActiveSelection } from 'fabric';
+import { type FabricImage, FabricObject, util, type ActiveSelection } from 'fabric';
 import { Canvas, Point } from 'fabric';
 import FontFaceObserver from 'fontfaceobserver';
 import { useFabricSettingStore } from './editorSetting';
@@ -88,17 +88,44 @@ export const useFabricStore = defineStore('fabric', () => {
     }
 
     if (savedCanvas) {
+      // load canvas state (zoom & vpt)
       const canvasStateSaved = localStorage.getItem('canvas-sate');
       const { zoom: zoomSaved, vpt } = canvasStateSaved ? JSON.parse(canvasStateSaved) : { zoom: 1, vpt: [1, 0, 0, 1, 0, 0] };
       zoom.value = zoomSaved;
       canvas.value.setViewportTransform(vpt);
 
+      // load canvas property
       await canvas.value.loadFromJSON(savedCanvas, (o, obj) => {
         if (obj && obj instanceof FabricObject) {
           assignEventToObj(obj);
           canvas.value?.requestRenderAll();
         }
       });
+
+      // load object to canvas
+      const objectsSaved = localStorage.getItem('canvas-objects');
+      if (objectsSaved) {
+        try {
+          const fileStore = useFileStore();
+          const objectsSavedParsed = JSON.parse(objectsSaved);
+          const objects = await util.enlivenObjects(objectsSavedParsed);
+          for (const obj of objects) {
+            if (obj instanceof FabricObject) {
+              if (obj.type === 'image') {
+                const fileId = obj.get('fileId');
+                const dataURL = await fileStore.getFile(fileId) || '';
+                await (obj as FabricImage).setSrc(dataURL);
+              }
+              assignEventToObj(obj);
+              canvas.value?.add(obj);
+              canvas.value?.requestRenderAll();
+            }
+          }
+        }
+        catch (error) {
+          console.error('Error loading objects', error);
+        }
+      }
     }
 
     setInterval(() => {

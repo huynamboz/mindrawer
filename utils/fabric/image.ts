@@ -1,9 +1,11 @@
 import { FabricImage } from 'fabric';
+import { v4 as uuidv4 } from 'uuid';
 import { defaultObjectControl } from './fabric';
 
 export function handlePasteImage(item: DataTransferItem) {
   try {
     const fabricStore = useFabricStore();
+    const fileStore = useFileStore();
     const canvas = fabricStore.canvas;
     const mousePos = fabricStore.mousePosition;
     if (!canvas) return;
@@ -19,14 +21,19 @@ export function handlePasteImage(item: DataTransferItem) {
           ...defaultObjectControl,
           scaleX: 0.5,
           scaleY: 0.5,
-        });
-        canvas?.add(img);
-
-        img.set({
+          excludeFromExport: true,
+          fileId: uuidv4(),
           left: mousePos.x - img.width / 4, // div 4 because scaleX is 0.5
           top: mousePos.y - img.height / 4,
         });
+
+        // save to db
+        console.log('save to db', event.target.result);
+        fileStore.saveFile(img.get('fileId'), event.target.result);
+
         img.setCoords();
+        canvas?.add(img);
+
         canvas?.setActiveObject(img);
         canvas.renderAll();
       }
@@ -72,16 +79,17 @@ export function handleImageUpload() {
           ...defaultObjectControl,
           scaleX: 0.5,
           scaleY: 0.5,
-        });
-
-        img.set({
+          excludeFromExport: true,
+          fileId: uuidv4(),
           left: centerX - img.width / 4, // div 4 because scaleX is 0.5
           top: centerY - img.height / 4,
         });
-        canvas?.add(img);
+
         img.setCoords();
+        canvas?.add(img);
         canvas?.setActiveObject(img);
         fabricStore.setActiveTool('select');
+        canvas.renderAll();
       }
     };
 
