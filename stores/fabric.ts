@@ -8,6 +8,7 @@ import { updateLinePositionWrapper } from '~/utils/fabric/lineControl';
 import { deselectAllPoint, assignEventToObj } from '~/utils/fabricEventHandler';
 import { fitTextboxToContent } from '~/utils/fabric/utils';
 import { handleImageUpload } from '~/utils/fabric/image';
+import { getAdditionalObjectKey } from '~/utils/fabric';
 
 export const useFabricStore = defineStore('fabric', () => {
   const canvas = ref<Canvas>();
@@ -57,34 +58,8 @@ export const useFabricStore = defineStore('fabric', () => {
 
     // Load canvas from local storage
     const savedCanvas = localStorage.getItem('canvas');
-
-    const fontFamilyList = savedCanvas?.match(/fontFamily":"(.*?)"/g)?.map(match => match.replace(/fontFamily":"(.*?)"/, '$1'));
-    const fontWeights = savedCanvas?.match(/fontWeight":"(.*?)"/g)?.map(match => match.replace(/fontWeight":"(.*?)"/, '$1'));
-    console.log('fontFamilyList', fontFamilyList);
-
-    if (fontFamilyList && fontWeights) {
-      const uniqueFontFamilyList = Array.from(new Set(fontFamilyList));
-      const uniqueFontWeightList = Array.from(new Set(fontWeights));
-      const fontPromises = [] as Promise<void>[];
-
-      uniqueFontFamilyList.forEach((fontFamily) => {
-        uniqueFontWeightList.forEach((fontWeight) => {
-          const fontFace = new FontFaceObserver(fontFamily, { weight: fontWeight });
-          fontPromises.push(
-            fontFace.load().then(() => {
-              console.log(`Font is available: ${fontFamily}, weight: ${fontWeight}`);
-            }).catch(() => {
-              console.log(`Font is not available: ${fontFamily}, weight: ${fontWeight}`);
-            }),
-          );
-        });
-      });
-      try {
-        await Promise.all(fontPromises);
-      }
-      catch (error) {
-        console.error('Error loading font', error);
-      }
+    if (!savedCanvas) {
+      localStorage.setItem('canvas', JSON.stringify(canvas.value.toDatalessJSON(getAdditionalObjectKey())));
     }
 
     if (savedCanvas) {
@@ -105,6 +80,36 @@ export const useFabricStore = defineStore('fabric', () => {
       // load object to canvas
       const objectsSaved = localStorage.getItem('canvas-objects');
       if (objectsSaved) {
+        // load font
+        const fontFamilyList = objectsSaved?.match(/fontFamily":"(.*?)"/g)?.map(match => match.replace(/fontFamily":"(.*?)"/, '$1'));
+        const fontWeights = objectsSaved?.match(/fontWeight":"(.*?)"/g)?.map(match => match.replace(/fontWeight":"(.*?)"/, '$1'));
+        console.log('fontFamilyList', fontFamilyList);
+
+        if (fontFamilyList && fontWeights) {
+          const uniqueFontFamilyList = Array.from(new Set(fontFamilyList));
+          const uniqueFontWeightList = Array.from(new Set(fontWeights));
+          const fontPromises = [] as Promise<void>[];
+
+          uniqueFontFamilyList.forEach((fontFamily) => {
+            uniqueFontWeightList.forEach((fontWeight) => {
+              const fontFace = new FontFaceObserver(fontFamily, { weight: fontWeight });
+              fontPromises.push(
+                fontFace.load().then(() => {
+                  console.log(`Font is available: ${fontFamily}, weight: ${fontWeight}`);
+                }).catch(() => {
+                  console.log(`Font is not available: ${fontFamily}, weight: ${fontWeight}`);
+                }),
+              );
+            });
+          });
+          try {
+            await Promise.all(fontPromises);
+          }
+          catch (error) {
+            console.error('Error loading font', error);
+          }
+        }
+        // load file
         try {
           const fileStore = useFileStore();
           const objectsSavedParsed = JSON.parse(objectsSaved);

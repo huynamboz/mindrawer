@@ -45,9 +45,7 @@ export const useFabricHistoryStore = defineStore('fabric-history', () => {
     });
     const objectsJSON = JSON.stringify(objects);
     localStorage.setItem('canvas-objects', objectsJSON);
-    canvas._objects = [];
-    localStorage.setItem('canvas', JSON.stringify(canvas.toDatalessJSON(getAdditionalObjectKey())));
-    canvas._objects = initialObjects;
+    // localStorage.setItem('canvas', JSON.stringify(canvas.toDatalessJSON(getAdditionalObjectKey())));
   }
 
   function historyNext() {
