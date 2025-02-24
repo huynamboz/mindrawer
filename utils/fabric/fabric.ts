@@ -32,6 +32,7 @@ export const defaultObjectControl = {
 };
 
 export const defaultObjectOptions = {
+  excludeFromExport: true,
   fill: 'transparent',
   stroke: 'black',
   strokeWidth: 1,
