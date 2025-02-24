@@ -2,7 +2,7 @@
 import { vOnClickOutside } from '@vueuse/components';
 import ColorPickerWrapper from './ColorPicker/ColorPickerWrapper.vue';
 import Sucker from './ColorPicker/Sucker.vue';
-import { createAlphaSquare } from './ColorPicker/composable';
+import { convertRGBAStringToHex, createAlphaSquare } from './ColorPicker/composable';
 
 const fabricSettingStore = useFabricSettingStore();
 const isShowBackgroundPicker = ref(false);
@@ -95,6 +95,7 @@ const openSucker = (isOpen: boolean) => {
         const color = `rgba(${pixel[0]}, ${pixel[1]}, ${pixel[2]}, ${pixel[3] / 255})`;
         console.log('Selected color:', color);
         selectedColor.value = color;
+        fabricSettingStore.setObjSetting(props.settingKey, convertRGBAStringToHex(color));
         isOpenSucker.value = false;
         suckerCanvas.value?.remove();
       });
