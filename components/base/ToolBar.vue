@@ -124,6 +124,10 @@ watch(space, (v) => {
 // undo redo
 watch([meta_Z, Ctrl_Z], (v) => {
   // do something
+  if (isAnyTextboxEditing()) {
+    return;
+  }
+
   if ((v[0] || v[1]) && !meta_Shift_Z.value) {
     console.log('undo');
     fabricHistoryStore.undo();
@@ -132,6 +136,10 @@ watch([meta_Z, Ctrl_Z], (v) => {
 
 watch([meta_Shift_Z, Ctrl_Y], (v) => {
   // do something
+  if (isAnyTextboxEditing()) {
+    return;
+  }
+
   if (v[0] || v[1]) {
     console.log('redo');
     fabricHistoryStore.redo();
