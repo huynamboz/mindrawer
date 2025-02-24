@@ -76,7 +76,7 @@ function handleDeleteObjects() {
     class="fixed max-h-[80vh] h-fit top-20 right-3 z-50"
   >
     <div
-      class="relative flex flex-col gap-5 font-light text-gray-600 text-xs p-3 h-fit rounded-xl w-[240px] border bg-white shadow-lg"
+      class="relative flex flex-col gap-5 font-light shadow-lg rounded-xl border text-gray-600 text-xs p-3 h-fit max-h-[100%] w-[240px] bg-white"
     >
       <template
         v-for="setting in settingsFilter.options"

@@ -89,6 +89,11 @@ export const useFabricStore = defineStore('fabric', () => {
     }
 
     if (savedCanvas) {
+      const canvasStateSaved = localStorage.getItem('canvas-sate');
+      const { zoom: zoomSaved, vpt } = canvasStateSaved ? JSON.parse(canvasStateSaved) : { zoom: 1, vpt: [1, 0, 0, 1, 0, 0] };
+      zoom.value = zoomSaved;
+      canvas.value.setViewportTransform(vpt);
+
       await canvas.value.loadFromJSON(savedCanvas, (o, obj) => {
         if (obj && obj instanceof FabricObject) {
           assignEventToObj(obj);
@@ -99,6 +104,9 @@ export const useFabricStore = defineStore('fabric', () => {
 
     setInterval(() => {
       localStorage.setItem('canvas', JSON.stringify(canvas.value?.toDatalessJSON(getAdditionalObjectKey())));
+      // save current canvas zoom & scale
+      const vpt = canvas.value?.viewportTransform;
+      localStorage.setItem('canvas-sate', JSON.stringify({ zoom: zoom.value, vpt }));
     }, 5000);
 
     canvas?.value.on('object:moving', function (e) {
