@@ -21,7 +21,6 @@ export function handlePasteImage(item: DataTransferItem) {
           ...defaultObjectControl,
           scaleX: 0.5,
           scaleY: 0.5,
-          excludeFromExport: true,
           fileId: uuidv4(),
           left: mousePos.x - img.width / 4, // div 4 because scaleX is 0.5
           top: mousePos.y - img.height / 4,
@@ -79,7 +78,6 @@ export function handleImageUpload() {
           ...defaultObjectControl,
           scaleX: 0.5,
           scaleY: 0.5,
-          excludeFromExport: true,
           fileId: uuidv4(),
           left: centerX - img.width / 4, // div 4 because scaleX is 0.5
           top: centerY - img.height / 4,

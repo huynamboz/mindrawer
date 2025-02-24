@@ -36,16 +36,18 @@ export const useFabricHistoryStore = defineStore('fabric-history', () => {
     historyUndo.value.push(historyNextState.value);
     historyIndex.value = historyUndo.value.length - 1;
 
-    const objects = canvas.getObjects().map((o) => {
+    const initialObjects = canvas.getObjects();
+    const objects = initialObjects.map((o) => {
       if (o.type === 'image') {
         o.set('src', '');
-        console.log('object', o.toObject());
       }
       return { ...o.toObject(getAdditionalObjectKey()), src: '' };
     });
     const objectsJSON = JSON.stringify(objects);
     localStorage.setItem('canvas-objects', objectsJSON);
+    canvas._objects = [];
     localStorage.setItem('canvas', JSON.stringify(canvas.toDatalessJSON(getAdditionalObjectKey())));
+    canvas._objects = initialObjects;
   }
 
   function historyNext() {
@@ -53,19 +55,7 @@ export const useFabricHistoryStore = defineStore('fabric-history', () => {
     const canvas = fabricStore.canvas;
     if (!canvas) return '';
 
-    // set excludeFromExport to false before saving the history
-    canvas.getObjects().forEach((o) => {
-      if (o instanceof FabricObject) {
-        o.excludeFromExport = false;
-      }
-    });
     const json = JSON.stringify(canvas.toDatalessJSON(getAdditionalObjectKey()));
-    // set excludeFromExport back to true
-    canvas.getObjects().forEach((o) => {
-      if (o instanceof FabricObject) {
-        o.excludeFromExport = true;
-      }
-    });
     return json;
   }
 
