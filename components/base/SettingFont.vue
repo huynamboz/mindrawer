@@ -13,6 +13,11 @@ const fonts = [
   'Poppins',
   'Bricolage Grotesque',
   'Montserrat',
+  'DM Sans',
+  'Caveat',
+  'Permanent Marker',
+  'Courgette',
+  'Be Vietnam Pro',
 ];
 
 const fontSizes = [
@@ -107,6 +112,7 @@ onBeforeMount(() => {
           type="text"
           class="w-full h-8 px-2 rounded-md outline-none"
           placeholder="Search font"
+          @input.stop
         >
       </div>
       <ul class="p-2">
