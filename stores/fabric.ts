@@ -5,7 +5,6 @@ import { useFabricSettingStore } from './editorSetting';
 import type { ToolType } from '~/types/toolbar';
 import { defaultObjectControl } from '~/utils/fabric/fabric';
 import { updateLinePositionWrapper } from '~/utils/fabric/lineControl';
-import { getAdditionalObjectKey } from '~/utils/fabric';
 import { deselectAllPoint, assignEventToObj } from '~/utils/fabricEventHandler';
 import { fitTextboxToContent } from '~/utils/fabric/utils';
 import { handleImageUpload } from '~/utils/fabric/image';
@@ -103,7 +102,6 @@ export const useFabricStore = defineStore('fabric', () => {
     }
 
     setInterval(() => {
-      localStorage.setItem('canvas', JSON.stringify(canvas.value?.toDatalessJSON(getAdditionalObjectKey())));
       // save current canvas zoom & scale
       const vpt = canvas.value?.viewportTransform;
       localStorage.setItem('canvas-sate', JSON.stringify({ zoom: zoom.value, vpt }));

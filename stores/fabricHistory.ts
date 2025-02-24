@@ -25,10 +25,15 @@ export const useFabricHistoryStore = defineStore('fabric-history', () => {
   }
 
   function historySaveAction() {
+    const fabricStore = useFabricStore();
+    const canvas = fabricStore.canvas;
+    if (!canvas) return;
+
     if (historyProcessing.value)
       return;
 
     // const json = historyNextState.value;
+    localStorage.setItem('canvas', JSON.stringify(canvas.toDatalessJSON(getAdditionalObjectKey())));
     historyNextState.value = historyNext();
     historyUndo.value.push(historyNextState.value);
     historyIndex.value = historyUndo.value.length - 1;
